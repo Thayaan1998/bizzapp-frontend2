@@ -4,7 +4,7 @@ import Popup from "../controls/Popup";
 import Controls from "../controls/Controls"
 
 import Switch from '@mui/material/Switch';
-//import { getAllMasterCofigarationsActions, deleteMasterConfigartionAction } from '../action/masterConfigarionsAction'
+import { getAllMasterCofigarationsActions, deleteMasterConfigartionAction } from '../action/masterConfigarionsAction'
 // import { CSVLink, CSVDownload } from "react-csv";
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import SideBar from '../SideBar'
@@ -12,7 +12,7 @@ import SideBar from '../SideBar'
 
 
 
-// import AddOrEditMasterConfigaration from './AddOrEditMasterConfigaration'
+import AddOrEditMasterConfigaration from './AddOrEditMasterConfigaration'
 
 
 
@@ -35,10 +35,10 @@ const MasterConfigarationList = () => {
 
     const closePopUp2 = async () => {
 
-        // var masterConfigarations = await getAllMasterCofigarationsActions();
+        var masterConfigarations = await getAllMasterCofigarationsActions();
 
-        // setMasterConfigarations(masterConfigarations)
-        // setOpenPopup(false);
+        setMasterConfigarations(masterConfigarations)
+        setOpenPopup(false);
 
         //window.location.reload(false);
 
@@ -46,9 +46,9 @@ const MasterConfigarationList = () => {
 
     const getMasterConfigarations = async () => {
 
-        // var masterConfigarations = await getAllMasterCofigarationsActions();
+        var masterConfigarations = await getAllMasterCofigarationsActions();
 
-        // setMasterConfigarations(masterConfigarations)
+        setMasterConfigarations(masterConfigarations)
 
     }
 
@@ -130,11 +130,11 @@ const MasterConfigarationList = () => {
                     if (window.confirm("Do you want to delete this record")) {
                         // // dispatch(deleteCustomers(selected[0]))
                         // setSelected([]);
-                        // await deleteMasterConfigartionAction(params.row);
+                        await deleteMasterConfigartionAction(params.row);
 
                         alert("Master Configaration details deleted successfully");
 
-                   //     await getMasterConfigarations();
+                        await getMasterConfigarations();
 
                     }
 
@@ -199,7 +199,7 @@ const MasterConfigarationList = () => {
 
 
 
-                {/* <Popup
+                <Popup
                     title={title}
                     openPopup={openPopup}
                     setOpenPopup={setOpenPopup}
@@ -211,7 +211,7 @@ const MasterConfigarationList = () => {
                         masterConfigaration={masterConfigaration}
                         recordForEdit={recordForEdit}
                         closePopUp={closePopUp2} />
-                </Popup> */}
+                </Popup>
             </div>
 
         </div>
