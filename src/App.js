@@ -1,8 +1,8 @@
 import logo from './logo.svg';
 // import './App.css';
-// import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import CustomerList from './customer/CustomerList';
-// import MasterConfigarationList from './masterconfigaration/MasterConfigarationList';
+import MasterConfigarationList from './masterconfigaration/MasterConfigarationList';
 // import HomeComponent from './HomeComponent';
 // import SideBar from './SideBar';
 // import SalesList from './sales/SalesList';
@@ -27,7 +27,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
     <div className="App">
-      <header className="App-header">
+      {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
@@ -40,25 +40,25 @@ function App() {
         >
           Learn React
         </a>
-      </header>
+      </header> */}
 
 
-      {/* <BrowserRouter>
+     <BrowserRouter>
     
         <Routes>
-            <Route path="/customers" element={<CustomerList />} />
+            {/* <Route path="/customers" element={<CustomerList />} /> */}
             <Route path="/" element={<MasterConfigarationList />} />
-            <Route path="/homeComponent" element={<HomeComponent />} />
+            {/* <Route path="/homeComponent" element={<HomeComponent />} />
             <Route path="/sideBar" element={<SideBar />} />
             <Route path="/sales" element={<SalesList />} />
             <Route path="/billWiseRecipt" element={<BillWiseReciptList />} />
-            <Route path="/cheque" element={<ChequeList />} />
+            <Route path="/cheque" element={<ChequeList />} /> */}
 
 
 
 
         </Routes>
-      </BrowserRouter> */}
+      </BrowserRouter>
 
 
     </div>
