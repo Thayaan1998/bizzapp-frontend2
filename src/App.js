@@ -27,7 +27,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
     <div className="App">
-      {/* <header className="App-header">
+      <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
           Edit <code>src/App.js</code> and save to reload.
@@ -40,12 +40,11 @@ function App() {
         >
           Learn React
         </a>
-      </header> */}
+      </header>
 
 
-      <BrowserRouter>
-        {/* <Header></Header>
-        < ToastContainer /> */}
+      {/* <BrowserRouter>
+    
         <Routes>
             <Route path="/customers" element={<CustomerList />} />
             <Route path="/" element={<MasterConfigarationList />} />
@@ -59,7 +58,7 @@ function App() {
 
 
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter> */}
 
 
     </div>
