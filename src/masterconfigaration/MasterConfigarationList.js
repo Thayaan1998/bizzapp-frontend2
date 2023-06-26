@@ -53,7 +53,7 @@ const MasterConfigarationList = () => {
     }
 
     useEffect(() => {
-      //  getMasterConfigarations();
+        getMasterConfigarations();
     }, []);
 
     const createOnClick = (event) => {
