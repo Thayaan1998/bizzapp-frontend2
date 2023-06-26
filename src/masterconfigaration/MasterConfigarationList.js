@@ -35,10 +35,10 @@ const MasterConfigarationList = () => {
 
     const closePopUp2 = async () => {
 
-        var masterConfigarations = await getAllMasterCofigarationsActions();
+        // var masterConfigarations = await getAllMasterCofigarationsActions();
 
-        setMasterConfigarations(masterConfigarations)
-        setOpenPopup(false);
+        // setMasterConfigarations(masterConfigarations)
+        // setOpenPopup(false);
 
         //window.location.reload(false);
 
