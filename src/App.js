@@ -1,13 +1,13 @@
 import logo from './logo.svg';
 // import './App.css';
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import CustomerList from './customer/CustomerList';
-import MasterConfigarationList from './masterconfigaration/MasterConfigarationList';
-import HomeComponent from './HomeComponent';
-import SideBar from './SideBar';
-import SalesList from './sales/SalesList';
-import BillWiseReciptList from './billwisereceipt/BillWiseReciptList';
-import ChequeList from './cheque/ChequeList';
+// import { BrowserRouter, Routes, Route } from "react-router-dom";
+// import CustomerList from './customer/CustomerList';
+// import MasterConfigarationList from './masterconfigaration/MasterConfigarationList';
+// import HomeComponent from './HomeComponent';
+// import SideBar from './SideBar';
+// import SalesList from './sales/SalesList';
+// import BillWiseReciptList from './billwisereceipt/BillWiseReciptList';
+// import ChequeList from './cheque/ChequeList';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
