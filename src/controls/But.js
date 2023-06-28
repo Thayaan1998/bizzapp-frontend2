@@ -22,7 +22,7 @@ export default function But(props) {
     return (
         <Button
             variant={variant || "contained"}
-            size={size || "large"}
+            size={size || "medimum"}
             color={color || "primary"}
             onClick={onClick}
             startIcon={starticon}

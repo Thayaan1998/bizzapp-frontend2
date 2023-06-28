@@ -21,6 +21,8 @@ const ChequeList = () => {
     const [recordForEdit, setRecordForEdit] = useState(false)
     const [title, setTitle] = useState("")
 
+
+
     const [billwiseRecipts, setBillwiseRecipts] = useState([])
 
     const [billwiseRecipt, setBillwiseRecipt] = useState({})
@@ -119,7 +121,7 @@ const ChequeList = () => {
 
 
 
-                <Popup
+                {/* <Popup
                     title={title}
                     openPopup={openPopup}
                     setOpenPopup={setOpenPopup}
@@ -132,7 +134,16 @@ const ChequeList = () => {
                         billwiseRecipt={billwiseRecipt}
                         recordForEdit={recordForEdit}
                         closePopUp={closePopUp2} />
-                </Popup>
+                </Popup> */}
+                {openPopup &&
+                    <AddCheque
+                        title={title}
+                        openPopup={openPopup}
+                        // billwiseRecipt={billwiseRecipt}
+                        recordForEdit={recordForEdit}
+                        closePopUp={closePopUp2} />
+
+                }
             </div>
         </div>
     );

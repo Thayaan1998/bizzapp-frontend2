@@ -13,7 +13,6 @@ export const getSalesAction = async () => {
 }
 
 export const insertSales = async (data) => {
-    debugger
     try {
         var a = await axios.post(urls.mainUrl+urls.insertSales,data, { headers });
         return a.data;
@@ -46,6 +45,16 @@ export const deleteSalesAction = async (data) => {
 export const insertImportSales = async (data) => {
     try {
         var a = await axios.post(urls.mainUrl+urls.insertImportSales,data, { headers });
+        return a.data;
+    } catch (error) {
+        throw error;
+    }
+   
+}
+
+export const getDateByWithoutRangeSalesAction = async (data) => {
+    try {
+        var a = await axios.post(urls.mainUrl+urls.getDateByWithoutRangeSales,data, { headers });
         return a.data;
     } catch (error) {
         throw error;

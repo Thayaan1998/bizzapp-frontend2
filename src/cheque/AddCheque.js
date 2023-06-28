@@ -22,15 +22,37 @@ import dayjs from 'dayjs';
 
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
-import { postChequeHeaderAction,postChequeDetailAction,getPericularlChequetDetailAction} from '../action/billwisereciptAction'
+import { getPericularlChequetDetailAction, getAllBillwiseReciptAction, postBillWiseReceiptHeaderAction, postBillWiseReceiptDetailAction, getPericularlBillWiseReceiptDetailAction } from '../action/billwisereciptAction'
+import { Dialog, DialogTitle, DialogContent, Typography, DialogActions } from '@mui/material';
+import styled from '@emotion/styled';
+
+
+import Autocomplete from '@mui/material/Autocomplete';
+import { Grid } from "@mui/material";
+
+const useStyles = styled(theme => ({
+    dialogWrapper: {
+        padding: theme.spacing(2),
+        position: 'absolute',
+        top: theme.spacing(5)
+    },
+    dialogTitle: {
+        paddingRight: '0px'
+    }
+}))
 
 
 
 const AddCheque = (props) => {
-    let { billwiseRecipt, recordForEdit, closePopUp } = props;
+    let { title, openPopup, recordForEdit, closePopUp } = props;
+
     const [customerNameAndCode, setCustomerNameAndCode] = useState('');
     const [customer, setCustomer] = useState('');
     const [customers, setCustomers] = useState([]);
+    const [billwiseRecipt, setBillwiseRecipt] = useState({});
+
+    //console.log(billwiseRecipt)
+
 
     const [paymentType, setPaymentType] = useState('');
     const [payemntTypes, setPayemntTypes] = useState([]);
@@ -38,6 +60,10 @@ const AddCheque = (props) => {
     const [bank, setBank] = useState('');
 
     const [banks, setBanks] = useState([]);
+
+    const [showCheque, setShowCheque] = useState(false)
+
+
 
 
 
@@ -50,28 +76,16 @@ const AddCheque = (props) => {
 
     const [date, setDate] = React.useState(dayjs(new Date()));
 
-    useEffect(() => {
-
-        debugger
-        if (billwiseRecipt != null) {
-            getSalesOutstansing(billwiseRecipt.customerId);
-
-        }
-
-    }, []);
 
 
-    useEffect(() => {
-        if (billwiseRecipt != null) {
-            loadData(billwiseRecipt.customerId);
-        }
-    }, []);
+
+
     const loadData = async () => {
 
         var a = {
             "receiptNo": billwiseRecipt.receiptNo
         };
-        var getBillWiseRecipts = await getPericularlChequetDetailAction(a);
+        var getBillWiseRecipts = await getPericularlBillWiseReceiptDetailAction(a);
 
         let arr1 = [];
         let arr2 = [];
@@ -88,7 +102,7 @@ const AddCheque = (props) => {
     }
 
     useEffect(() => {
-        if (billwiseRecipt != null) {
+        if (Object.keys(billwiseRecipt).length != 0 && openPopup) {
             setBank(billwiseRecipt.bankId);
 
         }
@@ -96,7 +110,7 @@ const AddCheque = (props) => {
     }, []);
 
     useEffect(() => {
-        if (billwiseRecipt != null) {
+        if (Object.keys(billwiseRecipt).length != 0 && openPopup) {
             setPaymentType(billwiseRecipt.paymentId);
 
         }
@@ -104,9 +118,18 @@ const AddCheque = (props) => {
     }, []);
 
     useEffect(() => {
-        if (billwiseRecipt != null) {
-            document.getElementById("receiptNumber").value = billwiseRecipt.receiptNo;
-            document.getElementById("amount").value = billwiseRecipt.amount;
+        if (Object.keys(billwiseRecipt).length != 0 && openPopup) {
+            setDate(dayjs(billwiseRecipt.receiptDate));
+
+        }
+
+    }, []);
+
+
+    useEffect(() => {
+        if (Object.keys(billwiseRecipt).length != 0 && openPopup) {
+            // document.getElementById("receiptNumber").value = billwiseRecipt.receiptNo;
+            // document.getElementById("amount").value = billwiseRecipt.amount;
 
 
 
@@ -155,31 +178,121 @@ const AddCheque = (props) => {
 
     }, []);
 
-    const handleCustomerChange = async (event) => {
-
-
-        getSalesOutstansing(event.target.value)
-    };
-
-    const getSalesOutstansing = async (customerId) => {
+    const getSalesOutstansing2 = async (customerId, billwiseRecipt) => {
+        debugger
         var customers = await getActiveCustomersAction();
         var obj = customers.find(customer => customer.customerId == customerId);
 
         console.log(obj)
-        setCustomer(customerId);
+        setCustomer(obj);
         // setCustomerNameAndCode(obj.name + " | " + obj.customerCode + " | " + obj.address)
 
+
+        var b = {
+            "receiptNo": billwiseRecipt.receiptNo
+        };
+        var getBillWiseRecipts = await getPericularlBillWiseReceiptDetailAction(b);
+
+        let arr1 = [];
+        let arr2 = [];
+
+
+        for (var i = 0; i < getBillWiseRecipts.length; i++) {
+            arr1.push(getBillWiseRecipts[i].invoiceNo)
+            // document.getElementById(getBillWiseRecipts[i].invoiceNo).value="1"
+            arr2.push(getBillWiseRecipts[i])
+        }
+
+        setCheckList(arr1);
+        setgetAmount(arr2)
+
         let value = {
-            "customerCode": obj.customerCode
+            "customerRefNo": obj.customerRefNo
         };
         let a = await getSalesOutstandingbyCustomerCodeAction(value);
 
         setSalesOutStanding(a);
 
+        // await loadData(billwiseRecipt.customerId);
+        setBank(billwiseRecipt.bankId);
+        setPaymentType(billwiseRecipt.paymentId);
+        // document.getElementById("receiptNumber").value = billwiseRecipt.receiptNo;
+        // document.getElementById("amount").value = billwiseRecipt.amount;
+
+
+        setSubTotal(billwiseRecipt.subTotal)
+
+        // setstate(
+        //     {reciptNo:billwiseRecipt.reciptNo,
+        //      chequeNo:billwiseRecipt.chequeNo,
+        //      amount:billwiseRecipt.amount
+        //     }
+
+        // )
+
+        setAmount(billwiseRecipt.amount)
+        setReceiptNo(billwiseRecipt.receiptNo)
+
+        if (billwiseRecipt.chequeNo != "") {
+            // setShowCheque(true)
+            // document.getElementById("chequeNumber").value = billwiseRecipt.chequeNo;
+
+            setchequeNumber(billwiseRecipt.chequeNo)
+
+        }
+
+    }
+
+
+
+    const getSalesOutstansing = async (customerId) => {
+        debugger
+        var customers = await getActiveCustomersAction();
+        var obj = customers.find(customer => customer.customerId == customerId);
+
+        console.log(obj)
+        setCustomer(obj);
+        // setCustomerNameAndCode(obj.name + " | " + obj.customerCode + " | " + obj.address)
+
+        let value = {
+            "customerRefNo": obj.customerRefNo
+        };
+        let a = await getSalesOutstandingbyCustomerCodeAction(value);
+
+        setSalesOutStanding(a);
+
+        await loadData(billwiseRecipt.customerId);
+        await setBank(billwiseRecipt.bankId);
+        await setPaymentType(billwiseRecipt.paymentId);
+        // document.getElementById("receiptNumber").value = billwiseRecipt.receiptNo;
+        // document.getElementById("amount").value = billwiseRecipt.amount;
+
+
+        setSubTotal(billwiseRecipt.subTotal)
+
+        // setstate(
+        //     {reciptNo:billwiseRecipt.reciptNo,
+        //      chequeNo:billwiseRecipt.chequeNo,
+        //      amount:billwiseRecipt.amount
+        //     }
+
+        // )
+
+        if (billwiseRecipt.chequeNo != "") {
+            // setShowCheque(true)
+            // document.getElementById("chequeNumber").value = billwiseRecipt.chequeNo;
+
+            setchequeNumber(billwiseRecipt.chequeNo)
+
+        }
+
     }
 
     const handlePaymentTypeChange = async (event) => {
 
+
+
+        setShowCheque(event.target.value == "8")
 
         setPaymentType(event.target.value);
     };
@@ -190,51 +303,53 @@ const AddCheque = (props) => {
         setBank(event.target.value);
     };
 
+    useEffect(() => {
+
+        //console.log()
+        if (Object.keys(billwiseRecipt).length != 0 && openPopup) {
+
+            getSalesOutstansing(billwiseRecipt.customerId);
+            // loadData(billwiseRecipt.customerId);
+            // setBank(billwiseRecipt.bankId);
+            // setPaymentType(billwiseRecipt.paymentId);
+            // document.getElementById("receiptNumber").value = billwiseRecipt.receiptNo;
+            // document.getElementById("amount").value = billwiseRecipt.amount;
+        }
+
+    }, []);
+
+
+
     const handleSubmit = async (e) => {
         e.preventDefault()
 
+
         try {
 
-            var values = {
-                receiptNo: document.getElementById("receiptNumber").value,
-                receiptDate: date,
-                customerId: customer,
-                paymentId: paymentType,
-                bankId: bank,
-                amount: document.getElementById("amount").value
-            };
+
+            if (document.getElementById("amount").value === subTotal.toString()) {
+
+                // var values = {
+                //     receiptNo: document.getElementById("receiptNumber").value,
+                //     receiptDate: date,
+                //     customerId: customer.customerId,
+                //     paymentId: paymentType,
+                //     bankId: bank,
+                //     amount: document.getElementById("amount").value,
+                //     subTotal: subTotal,
+                //     chequeNo: showCheque ? document.getElementById("chequeNumber").value : ""
+                // };
 
 
 
-            let insert = await postChequeHeaderAction(values);
+                // let insert = await postBillWiseReceiptHeaderAction(values);
 
-            // alert(insert=="perticular Sales code already added"?"perticular Sales code already exsist":"sales Details Added Successfully")
-
-
-            if (insert == "Added Successfully") {
-                for (var i = 0; i < checkList.length; i++) {
-                    values = {
-                        receiptNo: document.getElementById("receiptNumber").value,
-                        invoiceNo: checkList[i],
-                        amount: document.getElementById(checkList[i]).value
-
-                    }
-                    await postChequeDetailAction(values)
-
-                    var getBalane = salesOutStanding.find(customer => customer.invoiceNo == checkList[i]).balance;
-
-                    const result = parseFloat(getBalane) - parseFloat(document.getElementById(checkList[i]).value);
-
-                    var values2 = {
-                        invoiceNo: checkList[i],
-                        balance: result
-                    }
-
-                    await updateSalesOutstandingAction(values2);
-                    alert("Cheque details added successfully")
-                }
-                closePopUp(false);
+                
+                
+            } else {
+                alert("amount not equal to subtotal")
             }
+
 
 
 
@@ -245,6 +360,48 @@ const AddCheque = (props) => {
 
         }
     }
+
+    const [subTotal, setSubTotal] = useState('');
+
+    const [chequeNumber, setchequeNumber] = useState('');
+
+    const [state, setstate] = useState({
+        reciptNo: "",
+        chequeNo: "",
+        amount: ""
+    });
+
+    const [amount, setAmount] = useState('');
+    const [receiptNo, setReceiptNo] = useState('');
+
+
+
+    useEffect(() => {
+        if (Object.keys(billwiseRecipt).length != 0 && openPopup) {
+
+            setAmount(billwiseRecipt.amount)
+        }
+
+    }, []);
+
+    useEffect(() => {
+        if (Object.keys(billwiseRecipt).length != 0 && openPopup) {
+
+            setReceiptNo(billwiseRecipt.receiptNo)
+        }
+
+    }, []);
+
+    // const { reciptNo, chequeNo, amount } = state
+    const handleInputChange = (e) => {
+        let { name, value } = e.target;
+        setstate({ ...state, [name]: value })
+        //  validate({ [name]: value })
+
+
+
+    }
+
 
     const columns = [
         {
@@ -275,7 +432,7 @@ const AddCheque = (props) => {
 
                 };
 
-                if (billwiseRecipt != null) {
+                if (billwiseRecipt != null && openPopup) {
                     let found = checkList.find(element => element == params.row.invoiceNo);
 
                     return <Checkbox
@@ -304,9 +461,9 @@ const AddCheque = (props) => {
 
         { field: "invoiceAmount", headerName: "Invoice Amount", width: 150, valueGetter: (params) => `${params.row.invoiceAmount || ''}` },
 
-        { field: "paidAmount", headerName: "Paid Amount", width: 200, valueGetter: (params) => `${params.row.paidAmount != null ? params.row.paidAmount : "0" || ''}` },
+        { field: "receiptAmount", headerName: "Paid Amount", width: 200, valueGetter: (params) => `${params.row.receiptAmount != null ? params.row.receiptAmount : "0" || ''}` },
 
-        { field: "balance", headerName: "Balance", width: 200, valueGetter: (params) => `${params.row.balance || ''}` },
+        { field: "balance", headerName: "Balance", width: 200, valueGetter: (params) => `${params.row.balance != null ? params.row.balance : "0" || ''}` },
 
         {
             field: "amount",
@@ -329,16 +486,35 @@ const AddCheque = (props) => {
                         if (e.target.value > params.row.balance) {
                             alert("entered amount is greaterthan balance amount");
                             e.target.value = "";
+                            var total = 0;
+                            for (var i = 0; i < checkList.length; i++) {
+                                if (document.getElementById(checkList[i]).value != "") {
+
+                                    total = parseFloat(document.getElementById(checkList[i]).value) + total;
+                                }
+                            }
+                            setSubTotal(total);
+                            return;
+                        } else {
+                            var total = 0;
+
+                            for (var i = 0; i < checkList.length; i++) {
+                                if (document.getElementById(checkList[i]).value != "") {
+
+                                    total = parseFloat(document.getElementById(checkList[i]).value) + total;
+                                }
+                            }
+                            setSubTotal(total);
                             return;
                         }
                     }
 
 
                 };
-                if (billwiseRecipt != null) {
+                if (billwiseRecipt != null && openPopup) {
                     let found = getAmount.find(element => element.invoiceNo == params.row.invoiceNo);
 
-                    console.log(found)
+
                     return <TextField
                         type="number"
                         id={params.row.invoiceNo}
@@ -346,7 +522,7 @@ const AddCheque = (props) => {
                         label="Enter Amount"
                         height="10px"
                         size="small"
-                        value={found == undefined ?"":found.amount}
+                        value={found == undefined ? "" : found.amount}
                         onChange={handleInputChange}
                         variant="standard"
                     />;
@@ -367,147 +543,281 @@ const AddCheque = (props) => {
             }
         },
     ];
+    // const { children, openPopup} = props;
+    const classes = useStyles();
+
+    const handleInputChange2 = async (e) => {
+        // console.log(e.target.value);
+        if (e.target.value == '') {
+
+        } else {
+            var data = {
+                chequeNo: e.target.value
+            }
+            var data = await getPericularlChequetDetailAction(data);
+            console.log(data);
+
+
+            if (data.length != 0) {
+                setBillwiseRecipt(data[0])
+                await getSalesOutstansing2(data[0].customerId, data[0]);
+
+            }
+        }
+
+
+
+    }
+
+
 
     return (
-        <div>
-            {/* <SideBar heading="Bill wise Receipt"></SideBar> */}
-
-            <div >
-                <Controls.Input
-                    type="text"
-                    name="Receipt Number"
-                    label="Cheque Number"
-                    id="receiptNumber"
-                // value={name}
-                // error={errors.name}
-                // onChange={handleInputChange}
-                />
+        <Dialog open={openPopup} maxWidth="xl" classes={{ paper: classes.dialogWrapper }}>
+            <DialogTitle style={{ marginLeft: "0px" }}>
+                <div >
+                    <Typography variant="h4" component="div" style={{ flexGrow: 1, marginLeft: "30px" }}>
+                        {title}
+                    </Typography>
 
 
-                <LocalizationProvider dateAdapter={AdapterDayjs} >
-                    <DatePicker
-                        value={date}
-                        onChange={(newValue) => setDate(newValue)}
-                        sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }} />
-                </LocalizationProvider>
+                    <Grid container>
+                        <Grid item>
+                            <Controls.Input
+                                type="text"
+                                name="Cheque Number"
+                                label="Cheque Number"
+                                id="chequeNumber"
+                                // value={chequeNumber}
+                                onChange={handleInputChange2}
 
-                <br></br>
-                <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}>
-                    <InputLabel id="demo-simple-select-required-label"> Select Customer</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-required-label"
-                        id="demo-simple-select-required"
-                        value={customer}
-                        label="Select Customer"
-                        onChange={handleCustomerChange}
-                    // style={{}}
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
+                            // error={errors.name}
 
-                        {
-                            customers.map(
-                                // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
-                                customer => (<MenuItem key={customer.customerId} value={customer.customerId}>{customer.name}</MenuItem>)
-                            )
-                        }
-                    </Select>
-                    <FormHelperText>{customerNameAndCode}</FormHelperText>
-                </FormControl>
-                <Controls.Input
-                    type="text"
-                    name="name"
-                    label="Amount"
-                    id="amount"
-                // value={name}
-                // error={errors.name}
-                // onChange={handleInputChange}
-                />
+                            />
 
+                        </Grid>
 
-                <br></br>
+                        <Grid item alignItems="stretch" style={{ display: "flex" }}>
+                            <Autocomplete
+                                disablePortal
+                                id="combo-box-demo"
+                                value={customer}
+                                onChange={async (event, newValue) => {
 
+                                    setCustomer(newValue);
 
-                <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}>
-                    <InputLabel id="demo-simple-select-required-label">Select Payment Type</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-required-label"
-                        id="demo-simple-select-required"
-                        value={paymentType}
-                        label="Select Payment Type"
-                        onChange={handlePaymentTypeChange}
-                    // style={{}}
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
+                                    if (newValue != null) {
+                                        let value = {
+                                            "customerRefNo": newValue.customerRefNo
+                                        };
+                                        let a = await getSalesOutstandingbyCustomerCodeAction(value);
 
-                        {
-                            payemntTypes.map(
-                                // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
-                                paymentType => (<MenuItem key={paymentType.masterConfigarationId} value={paymentType.masterConfigarationId}>{paymentType.name}</MenuItem>)
-                            )
-                        }
-                    </Select>
-                    {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
-                </FormControl>
+                                        setSalesOutStanding(a);
+                                    } else {
+                                        setSalesOutStanding([]);
+                                    }
 
-                <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}>
-                    <InputLabel id="demo-simple-select-required-label"> Select Bank</InputLabel>
-                    <Select
-                        labelId="demo-simple-select-required-label"
-                        id="demo-simple-select-required"
-                        value={bank}
-                        label="Select Bank"
-                        onChange={handleBanksChange}
-                    // style={{}}
-                    >
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
+                                }}
+                                getOptionLabel={(option) => {
+                                    return option != "" ? option.customerRefNo + " | " + option.label : "";
 
-                        {
-                            banks.map(
-                                // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
-                                bank => (<MenuItem key={bank.masterConfigarationId} value={bank.masterConfigarationId}>{bank.name}</MenuItem>)
-                            )
-                        }
-                    </Select>
-                    {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
-                </FormControl>
+                                }
+                                }
+                                options={customers}
+                                sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}
+                                renderInput={(params) => <TextField {...params} label="Select Customer" />}
+
+                            />
+
+                        </Grid>
+                        <Grid item alignItems="stretch" style={{ display: "flex" }}>
+
+                            {
+
+                                amount === "" ? null : <Controls.Input
+                                    type="text"
+                                    name="name"
+                                    label="Amount"
+                                    id="amount"
+                                    value={amount}
+                                // onChange={handleInputChange}
 
 
-                <div style={{ height: '100%', width: '100%', margin: "20px" }}>
-                    <DataGrid
-                        rows={salesOutStanding}
-                        getRowId={(row) => row.invoiceNo}
-                        columns={columns}
-                        disableRowSelectionOnClick
-                        // slots={{
-                        //     toolbar: GridToolbar,
-                        // }}
-                        initialState={{
-                            pagination: {
-                                paginationModel: { page: 0, pageSize: 5 },
-                            },
-                        }}
-                        pageSizeOptions={[5, 10, 15]}
+                                // value={name}
+                                // error={errors.name}
+                                // onChange={handleInputChange}
+                                />
+                            }
+                        </Grid>
+                    </Grid>
+
+
+
+
+
+
+
+                    {/* <br></br> */}
+                    <LocalizationProvider dateAdapter={AdapterDayjs} >
+                        <DatePicker
+                            value={date}
+                            onChange={(newValue) => setDate(newValue)}
+                            sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }} />
+                    </LocalizationProvider>
+
+                    <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "180px", marginTop: "20px", marginRight: "30px" }}>
+                        <InputLabel id="demo-simple-select-required-label">Select Payment Type</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-required-label"
+                            id="demo-simple-select-required"
+                            value={paymentType}
+                            label="Select Payment Type"
+                            onChange={handlePaymentTypeChange}
+                        // style={{}}
+                        >
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+
+                            {
+                                payemntTypes.map(
+                                    // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
+                                    paymentType => (<MenuItem key={paymentType.masterConfigarationId} value={paymentType.masterConfigarationId}>{paymentType.name}</MenuItem>)
+                                )
+                            }
+                        </Select>
+                        {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
+                    </FormControl>
+
+                    <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "10px", width: "180px", marginTop: "20px", marginRight: "30px" }}>
+                        <InputLabel id="demo-simple-select-required-label"> Select Bank</InputLabel>
+                        <Select
+                            labelId="demo-simple-select-required-label"
+                            id="demo-simple-select-required"
+                            value={bank}
+                            label="Select Bank"
+                            onChange={handleBanksChange}
+                        // style={{}}
+                        >
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+
+                            {
+                                banks.map(
+                                    // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
+                                    bank => (<MenuItem key={bank.masterConfigarationId} value={bank.masterConfigarationId}>{bank.name}</MenuItem>)
+                                )
+                            }
+                        </Select>
+                        {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
+                    </FormControl>
+                    {receiptNo === "" ? null : <Controls.Input
+                        type="text"
+
+                        name="Receipt Number"
+                        label="Receipt Number"
+                        value={receiptNo}
+                    // onChange={handleInputChange}
+
+
+                    // value={name}
+                    // error={errors.name}
+                    // onChange={handleInputChange}
                     />
+                    }
+
+
+
+                </div>
+            </DialogTitle>
+            <DialogContent dividers>
+                <div>
+                    {/* <SideBar heading="Bill wise Receipt"></SideBar> */}
+
+                    <div >
+
+
+
+                        <div style={{ height: '100%', width: '100%', margin: "20px" }}>
+                            <DataGrid
+                                rows={salesOutStanding}
+                                getRowId={(row) => row.invoiceNo}
+                                columns={columns}
+                                disableRowSelectionOnClick
+                                hideFooterPagination
+                                hideFooterSelectedRowCount
+                            />
+                        </div>
+                    </div>
                 </div>
 
-                <Controls.But
-                    type="Submit"
-                    text="Save"
-                    onClick={handleSubmit}
+            </DialogContent>
+            <DialogActions>
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+
+                {!recordForEdit &&
+                    <Controls.But
+                        type="Submit"
+                        text="Save"
+                        onClick={handleSubmit}
                     // style={{ margin: "20px" }}
-                    margin='20px'
+                    // margin='20px'
+                    >
+                    </Controls.But>
+
+                }
+                <Controls.But onClick={closePopUp} sx={{ marginLeft: "50px" }} color="error" text="Close" margin='20px'>Close</Controls.But>
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+
+                <div style={{ flex: '1 0 0', justifyContent: 'space-around', }} />
+
+                <div style={{ flex: '1 0 0' }} />
+                <h3><b>sub Total:</b></h3>
+                <TextField
+                    style={{ marginLeft: "30px", width: "200px", marginRight: "30px" }}
+                    type="text"
+                    id="subTotal"
+                    name="subTotal"
+                    label="Sub Total"
+                    value={subTotal}
+                    // {...(errors.address && {error:true,helperText:errors.address})}
+                    InputProps={{
+                        readOnly: true,
+                    }}
                 >
 
+                </TextField>
+            </DialogActions>
 
-
-                </Controls.But>
-            </div>
-        </div>)
+        </Dialog >
+    )
 }
 export default AddCheque;

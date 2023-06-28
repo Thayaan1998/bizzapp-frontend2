@@ -84,7 +84,7 @@ const CustomerList = () => {
 
         { field: "name", headerName: "Name", width: 150, valueGetter: (params) => `${params.row.name || ''}` },
 
-        { field: "tellNo", headerName: "Tel NO", width: 150, valueGetter: (params) => `${params.row.telephoneNumber || ''}` },
+        // { field: "tellNo", headerName: "Tel NO", width: 150, valueGetter: (params) => `${params.row.telephoneNumber || ''}` },
 
         { field: "address", headerName: "Address", width: 250, valueGetter: (params) => `${params.row.address || ''}` },
 
@@ -160,7 +160,7 @@ const CustomerList = () => {
             <SideBar heading="Customers"></SideBar>
 
 
-            <div style={{ marginLeft: "260px",marginTop:"100px" }}>
+            <div style={{ marginLeft: "260px",marginTop:"50px" }}>
                 <Controls.But
                     text="Create "
                     onClick={() => createOnClick()}
@@ -183,7 +183,7 @@ const CustomerList = () => {
 
                 <br></br>
 
-                <div style={{ height: '100%', width: '95%', margin:"20px"}}>
+                <div style={{ height: '100%', width: '90%', margin:"20px"}}>
                     <DataGrid
                         rows={customers}
                         getRowId={(row) => row.customerId}

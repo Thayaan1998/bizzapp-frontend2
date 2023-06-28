@@ -82,3 +82,12 @@ export const getPericularlChequetDetailAction = async (data) => {
     }
    
 }
+
+export const getBillWiseReciptWithDateRangeAction = async (data) => {
+    try {
+        var a = await axios.post(urls.mainUrl+urls.getBillWiseReciptWithDateRange,data, { headers });
+        return a.data;
+    } catch (error) {
+        throw error;
+    }
+}

@@ -19,17 +19,19 @@ import Typography from '@mui/material/Typography';
 import { colors } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
-
-import Button  from "@mui/material/Button";
+import MenuItem from '@mui/material/MenuItem';
+import Menu from '@mui/material/Menu';
+import Button from "@mui/material/Button";
 
 import logo from './logo.jpeg'; // Tell webpack this JS file uses this image
 import { Margin } from '@mui/icons-material';
+import AccountCircle from '@mui/icons-material/AccountCircle';
 
 
 const drawerWidth = 240;
 
 function SideBar(props) {
-    const { window, heading } = props;
+    const { window1, heading } = props;
     const [mobileOpen, setMobileOpen] = React.useState(false);
 
     const handleDrawerToggle = () => {
@@ -38,27 +40,40 @@ function SideBar(props) {
 
     const navigate = useNavigate()
 
-  
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const handleMenu = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const logOut = () => {
+      if(window.confirm("Do you want to logout")){
+        navigate('/')
+      }
+    };
 
 
     const drawer = (
-        <div  style={{backgroundColor:"rgba(32,56,100,255)",height:"100%" ,color:"white"}}>
+        <div style={{ backgroundColor: "rgba(32,56,100,255)", height: "100%", color: "white" }}>
             <Toolbar sx={{
                 //   width: 240,
                 //   height: 500,
                 color: "rgba(225,249,27,1)",
                 backgroundColor: "rgba(32,56,100,255)"
-                
+
             }} disableGutters>
-                <img style={{ margin:"20px"  }} src={logo} alt="Logo" />
+                <img style={{ margin: "20px" }} src={logo} alt="Logo" />
 
             </Toolbar>
             <Divider />
 
 
             <List          >
-            <ListItem disablePadding>
-                    <ListItemButton onClick={() => navigate('/')}>
+                <ListItem disablePadding>
+                    <ListItemButton onClick={() => navigate('/masterConfigaration')}>
                         <ListItemText primary="Master Configaration" />
                     </ListItemButton>
                 </ListItem>
@@ -82,15 +97,30 @@ function SideBar(props) {
                         <ListItemText primary="Cheque Return" />
                     </ListItemButton>
                 </ListItem>
-               
-               
+                <ListItem disablePadding>
+                    <ListItemButton onClick={() => navigate('/salesSummary')}>
+                        <ListItemText primary="Sales Summary" />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton onClick={() => navigate('/receiptSummary')}>
+                        <ListItemText primary="Receipt Summary" />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton onClick={() => navigate('/outStandingSummary')}>
+                        <ListItemText primary="OutStanding Summary" />
+                    </ListItemButton>
+                </ListItem>
+
+
             </List>
 
 
         </div>
     );
 
-    const container = window !== undefined ? () => window().document.body : undefined;
+    const container = window1 !== undefined ? () => window().document.body : undefined;
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -102,7 +132,7 @@ function SideBar(props) {
                     ml: { sm: `${drawerWidth}px` },
                 }}
             >
-                <Toolbar>
+                {/* <Toolbar>
                     <IconButton
                         color="inherit"
                         aria-label="open drawer"
@@ -113,17 +143,54 @@ function SideBar(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        {heading}
+                     
                     </Typography>
+                </Toolbar> */}
+                 <Toolbar>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    {heading}
+                </Typography>
+                <div align="right">
+                    <IconButton
+                        size="large"
+                        aria-label="account of current user"
+                        aria-controls="menu-appbar"
+                        aria-haspopup="true"
+                        onClick={handleMenu}
+                        color="inherit"
+                    >
+                        <AccountCircle />
+                    </IconButton>
+                    <Menu
+                        id="menu-appbar"
+                        anchorEl={anchorEl}
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        keepMounted
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                    >
+                        <MenuItem onClick={logOut}>LogOut</MenuItem>
+                        {/* <MenuItem onClick={handleClose}>My account</MenuItem> */}
+                    </Menu>
+                </div>
                 </Toolbar>
             </AppBar>
+            
+          
             <Box
                 component="nav"
                 sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
                 aria-label="mailbox folders"
                 bgcolor="primary"
             >
-                
+
                 <Drawer
                     variant="permanent"
                     sx={{
@@ -140,7 +207,7 @@ function SideBar(props) {
                 component="main"
                 sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
             >
-             
+
             </Box>
         </Box>
     );
@@ -151,7 +218,7 @@ SideBar.propTypes = {
      * Injected by the documentation to work in an iframe.
      * You won't need it on your project.
      */
-    window: PropTypes.func,
+    window1: PropTypes.func,
 };
 
 export default SideBar;

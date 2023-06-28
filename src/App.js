@@ -8,6 +8,13 @@ import SideBar from './SideBar';
 import SalesList from './sales/SalesList';
 import BillWiseReciptList from './billwisereceipt/BillWiseReciptList';
 import ChequeList from './cheque/ChequeList';
+import SalesSummary from './reports/SalesSummary';
+import ReceiptSummary from './reports/ReceiptSummary';
+import OutstandingSummary from './reports/OutstandingSummary';
+import Login from './Login';
+
+
+
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
@@ -26,7 +33,7 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-    <div className="App">
+    <div className="App" >
       {/* <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
@@ -47,12 +54,17 @@ function App() {
     
         <Routes>
             <Route path="/customers" element={<CustomerList />} />
-            <Route path="/" element={<MasterConfigarationList />} />
+            <Route path="/masterConfigaration" element={<MasterConfigarationList />} />
             <Route path="/homeComponent" element={<HomeComponent />} />
             <Route path="/sideBar" element={<SideBar />} />
             <Route path="/sales" element={<SalesList />} />
             <Route path="/billWiseRecipt" element={<BillWiseReciptList />} />
             <Route path="/cheque" element={<ChequeList />} />
+            <Route path="/salesSummary" element={<SalesSummary />} />
+            <Route path="/receiptSummary" element={<ReceiptSummary />} />
+            <Route path="/outStandingSummary" element={<OutstandingSummary />} />
+            <Route path="/" element={<Login />} />
+
 
 
 

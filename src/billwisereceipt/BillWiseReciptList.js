@@ -77,10 +77,10 @@ const BillWiseReciptList = () => {
 
         { field: 'customerId', headerName: 'Customer Name', width: 150, valueGetter: (params) => `${params.row.customerName || ''}` },
 
-        { field: "receiptDate", headerName: "Receipt Date", width: 250, valueGetter: (params) => `${params.row.receiptDate1 || ''}` },
+        { field: "receiptDate", headerName: "Receipt Date", width: 150, valueGetter: (params) => `${params.row.receiptDate1 || ''}` },
 
 
-        { field: "bankName", headerName: "Bank Name", width: 200, valueGetter: (params) => `${params.row.bankName || ''}` },
+        { field: "bankName", headerName: "Bank Name", width: 150, valueGetter: (params) => `${params.row.bankName || ''}` },
 
         { field: "amount", headerName: "Amount", width: 150, valueGetter: (params) => `${params.row.amount || ''}` },
 
@@ -131,7 +131,7 @@ const BillWiseReciptList = () => {
             <SideBar heading="Bill Wise Recipt"></SideBar>
 
 
-            <div style={{ marginLeft: "260px", marginTop: "100px" }}>
+            <div style={{ marginLeft: "260px", marginTop: "50px" }}>
                 <Controls.But
                     text="Create "
                     onClick={() => createOnClick()}

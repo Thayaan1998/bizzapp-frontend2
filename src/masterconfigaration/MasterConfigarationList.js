@@ -79,9 +79,9 @@ const MasterConfigarationList = () => {
 
         { field: 'type', headerName: 'type', width: 150, valueGetter: (params) => `${params.row.type || ''}` },
 
-        { field: "name", headerName: "name", width: 300, valueGetter: (params) => `${params.row.name || ''}` },
+        { field: "name", headerName: "name", width: 250, valueGetter: (params) => `${params.row.name || ''}` },
 
-        { field: "description", headerName: "Description", width: 300, valueGetter: (params) => `${params.row.description || ''}` },
+        // { field: "description", headerName: "Description", width: 200, valueGetter: (params) => `${params.row.description || ''}` },
 
         { field: "createdDate", headerName: "Created Date", width: 200, valueGetter: (params) => `${params.row.createdDate || ''}` },
 
@@ -152,7 +152,7 @@ const MasterConfigarationList = () => {
     return (
         <div>
             <SideBar heading="Master Configaration"></SideBar>
-            <div style={{ marginLeft: "260px",marginTop:"100px" }}>
+            <div style={{ marginLeft: "260px",marginTop:"50px" }}>
                 <Controls.But
                     text="Create "
                     onClick={() => createOnClick()}

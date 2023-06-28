@@ -22,3 +22,13 @@ export const updateSalesOutstandingAction = async (data) => {
    
 }
 
+
+export const getDetailOutStanding = async (data) => {
+    try {
+        var a = await axios.post(urls.mainUrl+urls.getDetailOutstanding,data, { headers });
+        return a.data;
+    } catch (error) {
+        throw error;
+    }
+   
+}

@@ -20,18 +20,21 @@ export const urls={
     deleteSales:"/deleteSales",
     updateSales:"/updateSales",
     insertImportSales: "/insertImportSales",
+    getDateByWithoutRangeSales:"/getDateByWithoutRangeSales",
 
     getSalesOutstandingbyCustomerCode:"/getSalesOutstandingbyCustomerCode",
     updateSalesOutstanding:"/updateSalesOutstanding",
     getBanks:"/getBanks",
     getPaymentType:"/getPaymentType",
     getAreaCodes:"/getAreaCodes",
+    getDetailOutstanding:"/getDetailOutstanding",
 
     
     getAllBillWiseReceiptHeader:"/getAllBillWiseReceiptHeader",
     insertBillWiseReceiptHeader:"/insertBillWiseReceiptHeader",
     insertBillWiseReceiptDetail:"/insertBillWiseReceiptDetail",
     getPericularlBillWiseReceiptDetail:"/getPericularlBillWiseReceiptDetail",
+    getBillWiseReciptWithDateRange:"/getBillWiseReciptWithDateRange",
 
 
     chequeHeader:"/chequeHeader",

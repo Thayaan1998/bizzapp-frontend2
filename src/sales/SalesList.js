@@ -136,12 +136,12 @@ const SalesList = () => {
 
         { field: 'invoiceNo', headerName: 'Invoice No', width: 150, valueGetter: (params) => `${params.row.invoiceNo || ''}` },
 
-        { field: "invoiceDate", headerName: "invoice Date", width: 250, valueGetter: (params) => `${params.row.invoiceDate1 || ''}` },
+        { field: "invoiceDate", headerName: "invoice Date", width: 150, valueGetter: (params) => `${params.row.invoiceDate1 || ''}` },
 
 
-        { field: "customerRefNo", headerName: "customer ", width: 300, valueGetter: (params) => `${params.row.customerRefNo +" | "+params.row.customerName || ''}` },
+        { field: "customerRefNo", headerName: "customer ", width: 200, valueGetter: (params) => `${params.row.customerRefNo +" | "+params.row.customerName || ''}` },
 
-        { field: "salesPerson", headerName: "Sales Person", width: 300, valueGetter: (params) => `${params.row.code+" | "+params.row.salesperson  || ''}` },
+        { field: "salesPerson", headerName: "Sales Person", width: 200, valueGetter: (params) => `${params.row.code+" | "+params.row.salesperson  || ''}` },
 
         { field: "total", headerName: "Total", width: 150, valueGetter: (params) => `${params.row.total || ''}` },
 
@@ -198,7 +198,7 @@ const SalesList = () => {
             <SideBar heading="Sales"></SideBar>
 
 
-            <div style={{ marginLeft: "260px", marginTop: "100px" }}>
+            <div style={{ marginLeft: "260px", marginTop: "50px" }}>
                 <Controls.But
                     text="Create "
                     onClick={() => createOnClick()}

@@ -28,6 +28,7 @@ import styled from '@emotion/styled';
 
 
 import Autocomplete from '@mui/material/Autocomplete';
+import { Grid } from "@mui/material";
 
 const useStyles = styled(theme => ({
     dialogWrapper: {
@@ -116,6 +117,15 @@ const AddBillWiseRecipt = (props) => {
 
     useEffect(() => {
         if (billwiseRecipt != null && openPopup) {
+            setDate(dayjs(billwiseRecipt.receiptDate));
+
+        }
+
+    }, []);
+
+
+    useEffect(() => {
+        if (billwiseRecipt != null && openPopup) {
             // document.getElementById("receiptNumber").value = billwiseRecipt.receiptNo;
             // document.getElementById("amount").value = billwiseRecipt.amount;
 
@@ -186,8 +196,8 @@ const AddBillWiseRecipt = (props) => {
         await loadData(billwiseRecipt.customerId);
         await setBank(billwiseRecipt.bankId);
         await setPaymentType(billwiseRecipt.paymentId);
-        document.getElementById("receiptNumber").value = billwiseRecipt.receiptNo;
-        document.getElementById("amount").value = billwiseRecipt.amount;
+        // document.getElementById("receiptNumber").value = billwiseRecipt.receiptNo;
+        // document.getElementById("amount").value = billwiseRecipt.amount;
 
 
         setSubTotal(billwiseRecipt.subTotal)
@@ -201,10 +211,10 @@ const AddBillWiseRecipt = (props) => {
         // )
 
         if (billwiseRecipt.chequeNo != "") {
-            setShowCheque(true)
+            // setShowCheque(true)
             // document.getElementById("chequeNumber").value = billwiseRecipt.chequeNo;
 
-           setchequeNumber(billwiseRecipt.chequeNo)
+            setchequeNumber(billwiseRecipt.chequeNo)
 
         }
 
@@ -248,7 +258,7 @@ const AddBillWiseRecipt = (props) => {
 
 
             if (document.getElementById("amount").value === subTotal.toString()) {
-               
+
                 var values = {
                     receiptNo: document.getElementById("receiptNumber").value,
                     receiptDate: date,
@@ -257,7 +267,7 @@ const AddBillWiseRecipt = (props) => {
                     bankId: bank,
                     amount: document.getElementById("amount").value,
                     subTotal: subTotal,
-                    chequeNo: showCheque?document.getElementById("chequeNumber").value:""
+                    chequeNo: showCheque ? document.getElementById("chequeNumber").value : ""
                 };
 
 
@@ -292,10 +302,11 @@ const AddBillWiseRecipt = (props) => {
                             }
 
                             await updateSalesOutstandingAction(values2);
-                            alert("Bill Wise Recipt details added successfully")
                         }
 
                     }
+                    alert("Bill Wise Recipt details added successfully")
+
                     closePopUp(false);
                 }
             } else {
@@ -323,7 +334,28 @@ const AddBillWiseRecipt = (props) => {
         amount: ""
     });
 
-    const { reciptNo, chequeNo, amount } = state
+    const [amount, setAmount] = useState('');
+    const [receiptNo, setReceiptNo] = useState('');
+
+
+
+    useEffect(() => {
+        if (billwiseRecipt != null && openPopup) {
+
+            setAmount(billwiseRecipt.amount)
+        }
+
+    }, []);
+
+    useEffect(() => {
+        if (billwiseRecipt != null && openPopup) {
+
+            setReceiptNo(billwiseRecipt.receiptNo)
+        }
+
+    }, []);
+
+    // const { reciptNo, chequeNo, amount } = state
     const handleInputChange = (e) => {
         let { name, value } = e.target;
         setstate({ ...state, [name]: value })
@@ -484,52 +516,104 @@ const AddBillWiseRecipt = (props) => {
                         {title}
                     </Typography>
 
-                    {/* <IconButton  style={{marginRight:"40px"}} onClick={closePopUp}>
-                        <CloseIcon />
-                    </IconButton> */}
-                    <br></br>
-                    <Controls.Input
-                        type="text"
-                        name="Receipt Number"
-                        label="Receipt Number"
-                        id="receiptNumber"
-                        //value={reciptNo}
-                        onChange={handleInputChange}
 
-                    // value={name}
-                    // error={errors.name}
-                    // onChange={handleInputChange}
-                    />
-                    <Autocomplete
-                        disablePortal
-                        id="combo-box-demo"
-                        value={customer}
-                        onChange={async (event, newValue) => {
+                    <Grid container>
+                        <Grid item>
+                            {receiptNo === "" ? <Controls.Input
+                                type="text"
+                                name="Receipt Number"
+                                label="Receipt Number"
+                                id="receiptNumber"
+                                //value={reciptNo}
+                                onChange={handleInputChange}
 
-                            setCustomer(newValue);
+                            // value={name}
+                            // error={errors.name}
+                            // onChange={handleInputChange}
+                            /> : <Controls.Input
+                                type="text"
 
-                            if (newValue != null) {
-                                let value = {
-                                    "customerRefNo": newValue.customerRefNo
-                                };
-                                let a = await getSalesOutstandingbyCustomerCodeAction(value);
+                                name="Receipt Number"
+                                label="Receipt Number"
+                                value={receiptNo}
+                            // onChange={handleInputChange}
 
-                                setSalesOutStanding(a);
-                            } else {
-                                setSalesOutStanding([]);
+
+                            // value={name}
+                            // error={errors.name}
+                            // onChange={handleInputChange}
+                            />
                             }
+                        </Grid>
 
-                        }}
-                        getOptionLabel={(option) => {
-                            return option != "" ? option.customerRefNo + " | " + option.label : "";
+                        <Grid item alignItems="stretch" style={{ display: "flex" }}>
+                            <Autocomplete
+                                disablePortal
+                                id="combo-box-demo"
+                                value={customer}
+                                onChange={async (event, newValue) => {
 
-                        }
-                        }
-                        options={customers}
-                        sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}
-                        renderInput={(params) => <TextField {...params} label="Select Customer" />}
+                                    setCustomer(newValue);
 
-                    />
+                                    if (newValue != null) {
+                                        let value = {
+                                            "customerRefNo": newValue.customerRefNo
+                                        };
+                                        let a = await getSalesOutstandingbyCustomerCodeAction(value);
+
+                                        setSalesOutStanding(a);
+                                    } else {
+                                        setSalesOutStanding([]);
+                                    }
+
+                                }}
+                                getOptionLabel={(option) => {
+                                    return option != "" ? option.customerRefNo + " | " + option.label : "";
+
+                                }
+                                }
+                                options={customers}
+                                sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}
+                                renderInput={(params) => <TextField {...params} label="Select Customer" />}
+
+                            />
+
+                        </Grid>
+                        <Grid item alignItems="stretch" style={{ display: "flex" }}>
+
+                            {
+
+                                amount === "" ? <Controls.Input
+                                    type="text"
+                                    name="name"
+                                    label="Amount"
+                                    id="amount"
+                                    //value={amount}
+                                    onChange={handleInputChange}
+
+
+                                // value={name}
+                                // error={errors.name}
+                                // onChange={handleInputChange}
+                                /> : <Controls.Input
+                                    type="text"
+                                    name="name"
+                                    label="Amount"
+                                    id="amount"
+                                    value={amount}
+                                // onChange={handleInputChange}
+
+
+                                // value={name}
+                                // error={errors.name}
+                                // onChange={handleInputChange}
+                                />
+                            }
+                        </Grid>
+                    </Grid>
+
+
+
 
 
 
@@ -541,25 +625,8 @@ const AddBillWiseRecipt = (props) => {
                             onChange={(newValue) => setDate(newValue)}
                             sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }} />
                     </LocalizationProvider>
-                    <Controls.Input
-                        type="text"
-                        name="name"
-                        label="Amount"
-                        id="amount"
-                        //value={amount}
-                        onChange={handleInputChange}
 
-
-                    // value={name}
-                    // error={errors.name}
-                    // onChange={handleInputChange}
-                    />
-
-
-                    <br></br>
-
-
-                    <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}>
+                    <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "180px", marginTop: "20px", marginRight: "30px" }}>
                         <InputLabel id="demo-simple-select-required-label">Select Payment Type</InputLabel>
                         <Select
                             labelId="demo-simple-select-required-label"
@@ -583,7 +650,7 @@ const AddBillWiseRecipt = (props) => {
                         {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
                     </FormControl>
 
-                    <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}>
+                    <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "10px", width: "180px", marginTop: "20px", marginRight: "30px" }}>
                         <InputLabel id="demo-simple-select-required-label"> Select Bank</InputLabel>
                         <Select
                             labelId="demo-simple-select-required-label"
@@ -620,7 +687,22 @@ const AddBillWiseRecipt = (props) => {
                         />
                     }
 
-                
+                    {chequeNumber!='' &&
+                        <Controls.Input
+                            type="text"
+                            name="Cheque Number"
+                            label="Cheque Number"
+                            id="chequeNumber"
+                            value={chequeNumber}
+                            onChange={handleInputChange}
+
+                        // error={errors.name}
+                        // onChange={handleInputChange}
+                        />
+                    }
+
+
+
                 </div>
             </DialogTitle>
             <DialogContent dividers>
