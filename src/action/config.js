@@ -1,6 +1,6 @@
 export const urls={
-    // mainUrl:"https://bizzpay-backend-f2facb358a61.herokuapp.com/api",
-    mainUrl:"http://localhost:5000/api",
+    mainUrl:"https://bizzpay-backend-f2facb358a61.herokuapp.com/api",
+    // mainUrl:"http://localhost:5000/api",
     getCustomerUrl:"/getCustomers",
     addCustomer:"/postCustomer",
     updateCustomer:"/updateCustomer",
