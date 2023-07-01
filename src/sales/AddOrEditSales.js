@@ -10,6 +10,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import { Grid } from "@mui/material";
 
 
 
@@ -172,19 +173,17 @@ const AddOrEditSales = (props) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-
-
         if (validate()) {
             if (customer != "" && customer != null) {
-                if (salesPerson != "" && salesPerson != null) {
+                if(!(date > new Date())){
                     try {
 
                         var values = {
                             salesId: sale == null ? 0 : sale.salesId,
                             invoiceNo: invoiceNo,
                             customerId: customer.customerId,
-                            customerRefNo:customer.customerRefNo,
-                            masterConfigarationId: salesPerson.masterConfigarationId,
+                            customerRefNo: customer.customerRefNo,
+                            masterConfigarationId:salesPerson != "" && salesPerson != null? salesPerson.masterConfigarationId:null,
                             invoiceDate: date,
                             total: total
                         };
@@ -216,7 +215,7 @@ const AddOrEditSales = (props) => {
 
                     }
                 } else {
-                    alert("please select sales person")
+                    alert("Selected Date is future date")
 
                 }
             } else {
@@ -250,106 +249,129 @@ const AddOrEditSales = (props) => {
 
     const { total, invoiceNo } = state
 
+    const zeroPad = (num, places) => String(num).padStart(places, '0')
 
     return (
         <div style={{ float: 'left' }}>
             <form noValidate autoComplete="off" onSubmit={handleSubmit}>
 
-
-                <Controls.Input
-                    type="text"
-                    name="invoiceNo"
-                    label="Invoice No"
-                    value={invoiceNo}
-                    error={errors.invoiceNo}
-                    onChange={handleInputChange}
-                />
-                <br></br>
-                <LocalizationProvider dateAdapter={AdapterDayjs} >
-                    <DatePicker
-                        value={date}
-                        onChange={(newValue) => setDate(newValue)}
-                        sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }} />
-                </LocalizationProvider>
-                <br></br>
-
-
-                <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    value={customer}
-                    onChange={(event, newValue) => {
-                        //console.log(newValue)
-                        setCustomer(newValue);
-
-                        if(newValue!=null){
-                            setAddress(newValue.address)
-
-                        }else{
-                            setAddress("")
-                        }
-
-                        // document.getElementById("address").value=newValue.address;
-                    }}
-                    getOptionLabel={(option) => {
-                        return option != "" ? option.customerRefNo + " | " + option.label : "";
-
-                    }
-                    }
-                    options={customers}
-                    sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}
-                    renderInput={(params) => <TextField {...params} label="Select Customer" />}
-
-                />
-                <br></br>
-                <TextField
-                    style={{ marginLeft: "30px", width: "400px", marginRight: "30px" }}
-                    type="text"
-                    id="address"
-                    name="address"
-                    label="Address"
-                    rows={2}
-                    maxRows={3}
-                    value={address}
-                    // {...(errors.address && {error:true,helperText:errors.address})}
-                    InputProps={{
-                        readOnly: true,
-                    }}
-                // onChange={handleInputChange}
-
-                />
-
-                <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    value={salesPerson}
-                    onChange={(event, newValue) => {
-                        //console.log(newValue)
-                        setSalesPerson(newValue);
-                    }}
-                    getOptionLabel={(option) => {
-                        return option != "" ? option.code + " | " + option.label : "";
-
-                    }}
-                    options={salesPersons}
-                    sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}
-                    renderInput={(params) => <TextField {...params} label="Select SalesPerson" />}
-
-                />
-
-                {/* <br></br> */}
-                <Controls.Input
-                    type="number"
-                    name="total"
-                    label="total"
-                    value={total}
-                    error={errors.total}
-                    onChange={handleInputChange}
-                />
+                <Grid container>
+                    <Grid item>
+                        <Controls.Input
+                            type="text"
+                            name="invoiceNo"
+                            label="Invoice No"
+                            value={invoiceNo}
+                            error={errors.invoiceNo}
+                            onChange={handleInputChange}
+                        />
+                    </Grid>
+                    <Grid item>
+                        <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Invoice Date</label>
+                        <br />
+                        <LocalizationProvider dateAdapter={AdapterDayjs} >
+                            <DatePicker
+                                value={date}
+                                onChange={(newValue) => setDate(newValue)}
+                                sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "300px", marginTop: "5px", marginRight: "30px" }} />
+                        </LocalizationProvider>
+                    </Grid>
+                </Grid>
                 <br></br>
 
+                <Grid container>
+                    <Grid item>
+                        <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Select Customer</label>
+                        <br />
 
+                        <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            value={customer}
+                            onChange={(event, newValue) => {
+                                //console.log(newValue)
+                                setCustomer(newValue);
+
+                                if (newValue != null) {
+                                    setAddress(newValue.address)
+
+                                } else {
+                                    setAddress("")
+                                }
+
+                                // document.getElementById("address").value=newValue.address;
+                            }}
+                            getOptionLabel={(option) => {
+                                return option != "" ? "CUST " + zeroPad(option.customerId, 4) + " | "+ option.customerRefNo + " | " + option.label : "";
+
+                            }
+                            }
+                            options={customers}
+                            sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "300px", marginTop: "5px", marginRight: "30px" }}
+
+                            renderInput={(params) => <TextField {...params} />}
+
+                        />
+                    </Grid>
+                    <Grid item>
+                        <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Select Sales Person</label>
+                        <br />
+                        <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            value={salesPerson}
+                            onChange={(event, newValue) => {
+                                //console.log(newValue)
+                                setSalesPerson(newValue);
+                            }}
+                            getOptionLabel={(option) => {
+                                return option != "" ? option.code + " | " + option.label : "";
+
+                            }}
+                            options={salesPersons}
+                            sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "300px", marginTop: "5px", marginRight: "30px" }}
+                            renderInput={(params) => <TextField {...params} />}
+
+                        />
+                    </Grid>
+                </Grid>
                 <br></br>
+
+                <Grid container>
+                    <Grid item>
+                        <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Address</label>
+                        <br />
+                        <TextField
+                            style={{ marginLeft: "30px", width: "300px", marginRight: "30px", marginTop: "5px" }}
+                            type="text"
+                            id="address"
+                            name="address"
+                            // label="Address"
+                            rows={3}
+                            maxRows={4}
+                            value={address}
+                            // {...(errors.address && {error:true,helperText:errors.address})}
+                            InputProps={{
+                                readOnly: true,
+                            }}
+                        // onChange={handleInputChange}
+
+                        />
+                    </Grid>
+                    <Grid item>
+
+                        {/* <br></br> */}
+                        <Controls.Input
+                            type="number"
+                            name="total"
+                            label="Total"
+                            value={total}
+                            error={errors.total}
+                            onChange={handleInputChange}
+                        />
+                    </Grid>
+                </Grid>
+
                 <br></br>
 
                 <Controls.But

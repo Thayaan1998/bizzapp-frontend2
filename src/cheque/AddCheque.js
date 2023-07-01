@@ -179,7 +179,7 @@ const AddCheque = (props) => {
     }, []);
 
     const getSalesOutstansing2 = async (customerId, billwiseRecipt) => {
-        debugger
+        
         var customers = await getActiveCustomersAction();
         var obj = customers.find(customer => customer.customerId == customerId);
 
@@ -207,7 +207,7 @@ const AddCheque = (props) => {
         setgetAmount(arr2)
 
         let value = {
-            "customerRefNo": obj.customerRefNo
+            "receiptNo": billwiseRecipt.receiptNo
         };
         let a = await getSalesOutstandingbyCustomerCodeAction(value);
 
@@ -220,7 +220,7 @@ const AddCheque = (props) => {
         // document.getElementById("amount").value = billwiseRecipt.amount;
 
 
-        setSubTotal(billwiseRecipt.subTotal)
+        setSubTotal(billwiseRecipt.subTotal.toFixed(2))
 
         // setstate(
         //     {reciptNo:billwiseRecipt.reciptNo,
@@ -230,7 +230,7 @@ const AddCheque = (props) => {
 
         // )
 
-        setAmount(billwiseRecipt.amount)
+        setAmount(billwiseRecipt.amount.toFixed(2))
         setReceiptNo(billwiseRecipt.receiptNo)
 
         if (billwiseRecipt.chequeNo != "") {
@@ -246,7 +246,6 @@ const AddCheque = (props) => {
 
 
     const getSalesOutstansing = async (customerId) => {
-        debugger
         var customers = await getActiveCustomersAction();
         var obj = customers.find(customer => customer.customerId == customerId);
 
@@ -255,9 +254,10 @@ const AddCheque = (props) => {
         // setCustomerNameAndCode(obj.name + " | " + obj.customerCode + " | " + obj.address)
 
         let value = {
-            "customerRefNo": obj.customerRefNo
+            "receiptNo": receiptNo
         };
         let a = await getSalesOutstandingbyCustomerCodeAction(value);
+
 
         setSalesOutStanding(a);
 
@@ -268,7 +268,7 @@ const AddCheque = (props) => {
         // document.getElementById("amount").value = billwiseRecipt.amount;
 
 
-        setSubTotal(billwiseRecipt.subTotal)
+        setSubTotal(billwiseRecipt.subTotal.toFixed(2))
 
         // setstate(
         //     {reciptNo:billwiseRecipt.reciptNo,
@@ -344,8 +344,8 @@ const AddCheque = (props) => {
 
                 // let insert = await postBillWiseReceiptHeaderAction(values);
 
-                
-                
+
+
             } else {
                 alert("amount not equal to subtotal")
             }
@@ -379,7 +379,7 @@ const AddCheque = (props) => {
     useEffect(() => {
         if (Object.keys(billwiseRecipt).length != 0 && openPopup) {
 
-            setAmount(billwiseRecipt.amount)
+            setAmount(billwiseRecipt.amount.toFixed(2))
         }
 
     }, []);
@@ -404,66 +404,66 @@ const AddCheque = (props) => {
 
 
     const columns = [
-        {
-            field: "checked",
-            headerName: "",
-            width: 50,
-            // sortable: false,
-            filter: false,
-            renderCell: (params) => {
-                const handleChange = (e) => {
-                    e.stopPropagation();
-                    let arr1 = checkList
+        // {
+        //     field: "checked",
+        //     headerName: "",
+        //     width: 50,
+        //     // sortable: false,
+        //     filter: false,
+        //     renderCell: (params) => {
+        //         const handleChange = (e) => {
+        //             e.stopPropagation();
+        //             let arr1 = checkList
 
-                    let found = checkList.find(element => element == params.row.invoiceNo);
+        //             let found = checkList.find(element => element == params.row.invoiceNo);
 
-                    if (found == undefined) {
-                        arr1.push(params.row.invoiceNo)
-                    } else {
-                        const index = arr1.indexOf(params.row.invoiceNo);
-                        if (index > -1) {
-                            arr1.splice(index, 1);
-                        }
-                        document.getElementById(params.row.invoiceNo).value = "";
-                    }
+        //             if (found == undefined) {
+        //                 arr1.push(params.row.invoiceNo)
+        //             } else {
+        //                 const index = arr1.indexOf(params.row.invoiceNo);
+        //                 if (index > -1) {
+        //                     arr1.splice(index, 1);
+        //                 }
+        //                 document.getElementById(params.row.invoiceNo).value = "";
+        //             }
 
-                    setCheckList(arr1)
-                    setSalesOutStanding(salesOutStanding);
+        //             setCheckList(arr1)
+        //             setSalesOutStanding(salesOutStanding);
 
-                };
+        //         };
 
-                if (billwiseRecipt != null && openPopup) {
-                    let found = checkList.find(element => element == params.row.invoiceNo);
+        //         if (billwiseRecipt != null && openPopup) {
+        //             let found = checkList.find(element => element == params.row.invoiceNo);
 
-                    return <Checkbox
-                        // checked={checked}
-                        checked={found == undefined ? false : true}
-                        id="checkbox"
-                        onChange={handleChange}
-                        inputProps={{ 'aria-label': 'controlled' }}
-                    />;
-                } else {
-                    return <Checkbox
-                        // checked={checked}
-                        //checked={false}
-                        id="checkbox"
-                        onChange={handleChange}
-                        inputProps={{ 'aria-label': 'controlled' }}
-                    />;
-                }
+        //             return <Checkbox
+        //                 // checked={checked}
+        //                 checked={found == undefined ? false : true}
+        //                 id="checkbox"
+        //                 onChange={handleChange}
+        //                 inputProps={{ 'aria-label': 'controlled' }}
+        //             />;
+        //         } else {
+        //             return <Checkbox
+        //                 // checked={checked}
+        //                 //checked={false}
+        //                 id="checkbox"
+        //                 onChange={handleChange}
+        //                 inputProps={{ 'aria-label': 'controlled' }}
+        //             />;
+        //         }
 
-            }
-        },
+        //     }
+        // },
 
         { field: 'invoiceNo', headerName: 'Invoice No', width: 150, valueGetter: (params) => `${params.row.invoiceNo || ''}` },
 
         { field: "invoiceDate", headerName: "Invoice Date", width: 250, valueGetter: (params) => `${params.row.invoiceDate1 || ''}` },
 
-        { field: "invoiceAmount", headerName: "Invoice Amount", width: 150, valueGetter: (params) => `${params.row.invoiceAmount || ''}` },
+        { field: "invoiceAmount", headerName: "Invoice Amount", width: 150, valueGetter: (params) => `${params.row.invoiceAmount.toFixed(2) || ''}` },
 
-        { field: "receiptAmount", headerName: "Paid Amount", width: 200, valueGetter: (params) => `${params.row.receiptAmount != null ? params.row.receiptAmount : "0" || ''}` },
+        { field: "receiptAmount", headerName: "Paid Amount", width: 200, valueGetter: (params) => `${params.row.receiptAmount != null ? params.row.receiptAmount.toFixed(2) : "0" || ''}` },
 
-        { field: "balance", headerName: "Balance", width: 200, valueGetter: (params) => `${params.row.balance != null ? params.row.balance : "0" || ''}` },
+        { field: "balance", headerName: "Balance", width: 200, valueGetter: (params) => `${params.row.balance != null ? params.row.balance.toFixed(2) : "0" || ''}` },
 
         {
             field: "amount",
@@ -493,7 +493,7 @@ const AddCheque = (props) => {
                                     total = parseFloat(document.getElementById(checkList[i]).value) + total;
                                 }
                             }
-                            setSubTotal(total);
+                            setSubTotal(total.toFixed(2));
                             return;
                         } else {
                             var total = 0;
@@ -504,7 +504,7 @@ const AddCheque = (props) => {
                                     total = parseFloat(document.getElementById(checkList[i]).value) + total;
                                 }
                             }
-                            setSubTotal(total);
+                            setSubTotal(total.toFixed(2));
                             return;
                         }
                     }
@@ -522,7 +522,7 @@ const AddCheque = (props) => {
                         label="Enter Amount"
                         height="10px"
                         size="small"
-                        value={found == undefined ? "" : found.amount}
+                        value={found == undefined ? "" : found.amount.toFixed(2)}
                         onChange={handleInputChange}
                         variant="standard"
                     />;
@@ -556,11 +556,13 @@ const AddCheque = (props) => {
             }
             var data = await getPericularlChequetDetailAction(data);
             console.log(data);
-
+            setReceiptNo("")
 
             if (data.length != 0) {
                 setBillwiseRecipt(data[0])
                 await getSalesOutstansing2(data[0].customerId, data[0]);
+
+            } else {
 
             }
         }
@@ -569,6 +571,7 @@ const AddCheque = (props) => {
 
     }
 
+    const zeroPad = (num, places) => String(num).padStart(places, '0')
 
 
     return (
@@ -595,45 +598,50 @@ const AddCheque = (props) => {
                             />
 
                         </Grid>
+                        {receiptNo === "" ? null :
+                            <Grid item >
 
-                        <Grid item alignItems="stretch" style={{ display: "flex" }}>
-                            <Autocomplete
-                                disablePortal
-                                id="combo-box-demo"
-                                value={customer}
-                                onChange={async (event, newValue) => {
+                                <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Select Customer</label>
+                                <br />
 
-                                    setCustomer(newValue);
+                                <Autocomplete
+                                    disablePortal
+                                    id="combo-box-demo"
+                                    value={customer}
+                                    onChange={async (event, newValue) => {
 
-                                    if (newValue != null) {
-                                        let value = {
-                                            "customerRefNo": newValue.customerRefNo
-                                        };
-                                        let a = await getSalesOutstandingbyCustomerCodeAction(value);
+                                        setCustomer(newValue);
 
-                                        setSalesOutStanding(a);
-                                    } else {
-                                        setSalesOutStanding([]);
+                                        // if (newValue != null) {
+                                        //     let value = {
+                                        //         "customerRefNo": newValue.customerRefNo
+                                        //     };
+                                        //     let a = await getSalesOutstandingbyCustomerCodeAction1(value);
+
+                                        //     setSalesOutStanding(a);
+                                        // } else {
+                                        //     setSalesOutStanding([]);
+                                        // }
+
+                                    }}
+                                    getOptionLabel={(option) => {
+                                        return option != "" ? "CUST " + zeroPad(option.customerId, 4) + " | " + option.customerRefNo + " | " + option.label : "";
+
                                     }
+                                    }
+                                    options={customers}
+                                    sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "370px", marginTop: "5px", marginRight: "30px" }}
+                                    renderInput={(params) => <TextField {...params} />}
 
-                                }}
-                                getOptionLabel={(option) => {
-                                    return option != "" ? option.customerRefNo + " | " + option.label : "";
+                                />
 
-                                }
-                                }
-                                options={customers}
-                                sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}
-                                renderInput={(params) => <TextField {...params} label="Select Customer" />}
-
-                            />
-
-                        </Grid>
+                            </Grid>
+                        }
                         <Grid item alignItems="stretch" style={{ display: "flex" }}>
-
+                        
                             {
 
-                                amount === "" ? null : <Controls.Input
+                                receiptNo === "" ? null : <Controls.Input
                                     type="text"
                                     name="name"
                                     label="Amount"
@@ -649,82 +657,100 @@ const AddCheque = (props) => {
                             }
                         </Grid>
                     </Grid>
+                    {receiptNo === "" ? null :
+
+                        <Grid container>
+                            <Grid item>
+                                <LocalizationProvider dateAdapter={AdapterDayjs} >
+                                    <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Date</label>
+                                    <br />
+                                    <DatePicker
+                                        value={date}
+                                        onChange={(newValue) => setDate(newValue)}
+                                        sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "300px", marginTop: "5px", marginRight: "30px" }} />
+                                </LocalizationProvider>
+                            </Grid>
+                            <Grid item>
+                                <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Payment Type</label>
+                                <br />
+                                <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "150px", marginTop: "5px", marginRight: "30px" }}>
+                                    <InputLabel id="demo-simple-select-required-label"></InputLabel>
+
+                                    <Select
+                                        labelId="demo-simple-select-required-label"
+                                        id="demo-simple-select-required"
+                                        value={paymentType}
+                                        label="Select Payment Type"
+                                        onChange={handlePaymentTypeChange}
+                                    // style={{}}
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+
+                                        {
+                                            payemntTypes.map(
+                                                // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
+                                                paymentType => (<MenuItem key={paymentType.masterConfigarationId} value={paymentType.masterConfigarationId}>{paymentType.name}</MenuItem>)
+                                            )
+                                        }
+                                    </Select>
+                                    {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
+                                </FormControl>
+                            </Grid>
+                            <Grid item>
+                                <label style={{ marginLeft: "10px", width: "120px", marginTop: "10px", marginRight: "30px" }}>Bank</label>
+                                <br />
+
+                                <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "10px", width: "180px", marginTop: "5px", marginRight: "30px" }}>
+                                    <InputLabel id="demo-simple-select-required-label"> </InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-required-label"
+                                        id="demo-simple-select-required"
+                                        value={bank}
+                                        label="Select Bank"
+                                        onChange={handleBanksChange}
+                                    // style={{}}
+                                    >
+                                        <MenuItem value="">
+                                            <em>None</em>
+                                        </MenuItem>
+
+                                        {
+                                            banks.map(
+                                                // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
+                                                bank => (<MenuItem key={bank.masterConfigarationId} value={bank.masterConfigarationId}>{bank.name}</MenuItem>)
+                                            )
+                                        }
+                                    </Select>
+                                    {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
+                                </FormControl>
+                            </Grid>
+                            <Grid item>
+                                {receiptNo === "" ? null : <Controls.Input
+                                    type="text"
+
+                                    name="Receipt Number"
+                                    label="Receipt Number"
+                                    value={receiptNo}
+                                // onChange={handleInputChange}
 
 
+                                // value={name}
+                                // error={errors.name}
+                                // onChange={handleInputChange}
+                                />
+                                }
 
 
-
-
-
-                    {/* <br></br> */}
-                    <LocalizationProvider dateAdapter={AdapterDayjs} >
-                        <DatePicker
-                            value={date}
-                            onChange={(newValue) => setDate(newValue)}
-                            sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }} />
-                    </LocalizationProvider>
-
-                    <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "180px", marginTop: "20px", marginRight: "30px" }}>
-                        <InputLabel id="demo-simple-select-required-label">Select Payment Type</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-required-label"
-                            id="demo-simple-select-required"
-                            value={paymentType}
-                            label="Select Payment Type"
-                            onChange={handlePaymentTypeChange}
-                        // style={{}}
-                        >
-                            <MenuItem value="">
-                                <em>None</em>
-                            </MenuItem>
-
-                            {
-                                payemntTypes.map(
-                                    // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
-                                    paymentType => (<MenuItem key={paymentType.masterConfigarationId} value={paymentType.masterConfigarationId}>{paymentType.name}</MenuItem>)
-                                )
-                            }
-                        </Select>
-                        {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
-                    </FormControl>
-
-                    <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "10px", width: "180px", marginTop: "20px", marginRight: "30px" }}>
-                        <InputLabel id="demo-simple-select-required-label"> Select Bank</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-required-label"
-                            id="demo-simple-select-required"
-                            value={bank}
-                            label="Select Bank"
-                            onChange={handleBanksChange}
-                        // style={{}}
-                        >
-                            <MenuItem value="">
-                                <em>None</em>
-                            </MenuItem>
-
-                            {
-                                banks.map(
-                                    // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
-                                    bank => (<MenuItem key={bank.masterConfigarationId} value={bank.masterConfigarationId}>{bank.name}</MenuItem>)
-                                )
-                            }
-                        </Select>
-                        {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
-                    </FormControl>
-                    {receiptNo === "" ? null : <Controls.Input
-                        type="text"
-
-                        name="Receipt Number"
-                        label="Receipt Number"
-                        value={receiptNo}
-                    // onChange={handleInputChange}
-
-
-                    // value={name}
-                    // error={errors.name}
-                    // onChange={handleInputChange}
-                    />
+                            </Grid>
+                        </Grid>
                     }
+
+
+
+
+
 
 
 

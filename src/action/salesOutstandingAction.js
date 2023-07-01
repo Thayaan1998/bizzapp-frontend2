@@ -12,6 +12,16 @@ export const getSalesOutstandingbyCustomerCodeAction = async (data) => {
    
 }
 
+export const getSalesOutstandingbyCustomerCodeAction1 = async (data) => {
+    try {
+        var a = await axios.post(urls.mainUrl+urls.getSalesOutstandingbyCustomerCode1,data, { headers });
+        return a.data;
+    } catch (error) {
+        throw error;
+    }
+   
+}
+
 export const updateSalesOutstandingAction = async (data) => {
     try {
         var a = await axios.post(urls.mainUrl+urls.updateSalesOutstanding,data, { headers });

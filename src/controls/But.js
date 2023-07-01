@@ -28,7 +28,7 @@ export default function But(props) {
             startIcon={starticon}
             classes={{ root: classes.root, label: classes.label }}
             {...other}
-            style={{marginLeft:margin}}
+            style={{marginLeft:margin,width:'100px',height:'40px'}}
 
             >
             {text}

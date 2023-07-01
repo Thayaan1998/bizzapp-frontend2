@@ -35,12 +35,12 @@ const MasterConfigarationList = () => {
 
     const closePopUp2 = async () => {
 
-        var masterConfigarations = await getAllMasterCofigarationsActions();
+        // var masterConfigarations = await getAllMasterCofigarationsActions();
 
-        setMasterConfigarations(masterConfigarations)
-        setOpenPopup(false);
+        // setMasterConfigarations(masterConfigarations)
+        // setOpenPopup(false);
 
-        //window.location.reload(false);
+        window.location.reload(false);
 
     }
 
@@ -77,9 +77,9 @@ const MasterConfigarationList = () => {
 
         { field: 'code', headerName: 'Code', width: 100, valueGetter: (params) => `${params.row.code || ''}` },
 
-        { field: 'type', headerName: 'type', width: 150, valueGetter: (params) => `${params.row.type || ''}` },
+        { field: 'type', headerName: 'Type', width: 150, valueGetter: (params) => `${params.row.type || ''}` },
 
-        { field: "name", headerName: "name", width: 250, valueGetter: (params) => `${params.row.name || ''}` },
+        { field: "name", headerName: "Name", width: 250, valueGetter: (params) => `${params.row.name || ''}` },
 
         // { field: "description", headerName: "Description", width: 200, valueGetter: (params) => `${params.row.description || ''}` },
 
@@ -186,10 +186,10 @@ const MasterConfigarationList = () => {
                         disableRowSelectionOnClick
                         initialState={{
                             pagination: {
-                                paginationModel: { page: 0, pageSize: 5 },
+                                paginationModel: { page: 0, pageSize: 10 },
                             },
                         }}
-                        pageSizeOptions={[10,25,50,100]}
+                        pageSizeOptions={[10,20,50,100]}
                     />
                 </div>
                 <br></br>

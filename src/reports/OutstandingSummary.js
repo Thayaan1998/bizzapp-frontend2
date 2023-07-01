@@ -92,8 +92,8 @@ const OutstandingSummary = () => {
     const generatePDF = () => {
         const doc = new jsPDF('l', 'mm', [297, 210]);
 
-        const tableColumn1 = ["Invoice No", "invoice Date", "customer", "0-7 Days", "7-30 Days", "30-60 Days", "60-90 Days", "above 90 Days"];
-        const tableColumn2 = ["customer", "0-7 Days", "7-30 Days", "30-60 Days", "60-90 Days", "above 90 Days"];
+        const tableColumn1 = ["Invoice No", "invoice Date", "customer", "0-7 Days", "8-15 Days", "16-30 Days", "30-60 Days", "above 60 Days"];
+        const tableColumn2 = ["customer",  "0-7 Days", "8-15 Days", "16-30 Days", "30-60 Days", "above 60 Days"];
 
         const tableRows1 = [];
         const tableRows2 = [];
@@ -155,10 +155,10 @@ const OutstandingSummary = () => {
                 recipt.invoiceDate,
                 customers.find(customer => customer.customerRefNo == recipt.customerRefNo).label,
                 recipt.datediff <= 7 ? recipt.balance : '',
-                recipt.datediff > 7 && recipt.datediff <= 30 ? recipt.balance : '',
+                recipt.datediff > 8 && recipt.datediff <= 15 ? recipt.balance : '',
+                recipt.datediff > 15 && recipt.datediff <= 30 ? recipt.balance : '',
                 recipt.datediff > 30 && recipt.datediff <= 60 ? recipt.balance : '',
-                recipt.datediff > 60 && recipt.datediff <= 90 ? recipt.balance : '',
-                recipt.datediff > 90 ? recipt.balance : ''
+                recipt.datediff > 60 ? recipt.balance : ''
 
             ];
             tableRows1.push(ticketData);
@@ -167,10 +167,10 @@ const OutstandingSummary = () => {
             const ticketData2 = [
                 customers.find(customer => customer.customerRefNo == recipt.customerRefNo).label,
                 recipt.datediff <= 7 ? recipt.balance : '',
-                recipt.datediff > 7 && recipt.datediff <= 30 ? recipt.balance : '',
+                recipt.datediff > 8 && recipt.datediff <= 15 ? recipt.balance : '',
+                recipt.datediff > 15 && recipt.datediff <= 30 ? recipt.balance : '',
                 recipt.datediff > 30 && recipt.datediff <= 60 ? recipt.balance : '',
-                recipt.datediff > 60 && recipt.datediff <= 90 ? recipt.balance : '',
-                recipt.datediff > 90 ? recipt.balance : ''
+                recipt.datediff > 60 ? recipt.balance : ''
 
             ];
             tableRows2.push(ticketData2);
@@ -216,30 +216,90 @@ const OutstandingSummary = () => {
 
 
         var sales = await getDetailOutStanding(values);
-        setRecipts(sales)
 
+        for(var i=0;i<sales.length;i++){
+        //  console.log(sales);
+          sales[i]["customerName"]=customers.find(customer => customer.customerRefNo == sales[i].customerRefNo).label
+        }
+
+        let already=[]
+        for(var j=0;j<sales.length;j++){
+
+           let a= already.find(e=>e==sales[j]["customerName"])
+
+           if(a==null){
+            already.push(sales[j]["customerName"])
+            sales.push({"customerName":sales[j]["customerName"],"invoiceDate":"a","invoiceNo":"a"+j,"customerRefNo":"a"+j})
+           }
+
+        }
+
+        console.log(already)
+
+     //   sales.sort((a,b) => a.customerName - b.customerName);
+    
+
+        let sales2=sales.sort(dynamicSortMultiple("customerName","invoiceNo"))
+        console.log(sales2 )
+        setRecipts(sales2)
+
+    }
+
+    function dynamicSortMultiple() {
+        /*
+         * save the arguments object as it will be overwritten
+         * note that arguments object is an array-like object
+         * consisting of the names of the properties to sort by
+         */
+        var props = arguments;
+        return function (obj1, obj2) {
+            var i = 0, result = 0, numberOfProperties = props.length;
+            /* try getting a different result from 0 (equal)
+             * as long as we have extra properties to compare
+             */
+            while(result === 0 && i < numberOfProperties) {
+                result = dynamicSort(props[i])(obj1, obj2);
+                i++;
+            }
+            return result;
+        }
+    }
+
+    function dynamicSort(property) {
+        var sortOrder = 1;
+        if(property[0] === "-") {
+            sortOrder = -1;
+            property = property.substr(1);
+        }
+        return function (a,b) {
+            /* next line works with strings and numbers, 
+             * and you may want to customize it to your needs
+             */
+            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            return result * sortOrder;
+        }
     }
 
 
     const columns = [
 
 
-        { field: 'invoiceNo', headerName: 'Invoice No', width: 150, valueGetter: (params) => `${params.row.invoiceNo || ''}` },
+        { field: 'invoiceNo', headerName: 'Invoice No', width: 150, valueGetter: (params) => `${params.row.invoiceDate!="a"?params.row.invoiceNo:"" || ''}` },
 
-        { field: "invoiceDate", headerName: "invoice Date", width: 150, valueGetter: (params) => `${params.row.invoiceDate || ''}` },
+        { field: "invoiceDate", headerName: "invoice Date", width: 150, valueGetter: (params) => `${params.row.invoiceDate!="a"?params.row.invoiceDate:""  || ''}` },
 
 
-        { field: "customerRefNo", headerName: "customer", width: 200, valueGetter: (params) => `${customers.find(customer => customer.customerRefNo == params.row.customerRefNo).label}` },
+        { field: "customerRefNo", headerName: "customer", width: 200, valueGetter: (params) => `${params.row.customerName}` },
 
-        { field: "7days", headerName: "0-7Days", width: 200, valueGetter: (params) => `${params.row.datediff <= 7 ? params.row.balance : '' || ''}` },
+        { field: "7days", headerName: "0-7Days", width: 150, valueGetter: (params) => `${params.row.invoiceDate!="a"?(params.row.datediff <= 7 ? params.row.balance : ''):'' || ''}` },
 
-        { field: "30days", headerName: "7-30days", width: 150, valueGetter: (params) => `${params.row.datediff > 7 && params.row.datediff <= 30 ? params.row.balance : '' || ''}` },
+        { field: "30days", headerName: "8-15days", width: 150, valueGetter: (params) => `${params.row.invoiceDate!="a"?(params.row.datediff > 7 && params.row.datediff <= 14 ? params.row.balance : ''):'' || ''}` },
 
-        { field: "60days", headerName: "30-60days", width: 150, valueGetter: (params) => `${params.row.datediff > 30 && params.row.datediff <= 60 ? params.row.balance : '' || ''}` },
+        { field: "60days", headerName: "16-30days", width: 150, valueGetter: (params) => `${params.row.invoiceDate!="a"?(params.row.datediff > 14 && params.row.datediff <= 30 ? params.row.balance : ''):'' || ''}` },
 
-        { field: "90days", headerName: "60-90days", width: 150, valueGetter: (params) => ` ${params.row.datediff > 60 && params.row.datediff <= 90 ? params.row.balance : '' || ''}` },
+        { field: "90days", headerName: "31-60days", width: 150, valueGetter: (params) => ` ${params.row.invoiceDate!="a"?(params.row.datediff > 30 && params.row.datediff <= 60 ? params.row.balance : ''):'' || ''}` },
 
-        { field: "above90", headerName: "above 90 Days", width: 150, valueGetter: (params) => ` ${params.row.datediff > 90 ? params.row.balance : '' || ''}` },
+        { field: "above90", headerName: "above 60 Days", width: 150, valueGetter: (params) => ` ${params.row.invoiceDate!="a"?(params.row.datediff > 60 ? params.row.balance.toFixed(2)  : ''):'' || ''}` },
 
 
 
@@ -253,17 +313,18 @@ const OutstandingSummary = () => {
         // { field: "invoiceDate", headerName: "invoice Date", width: 150, valueGetter: (params) => `${params.row.invoiceDate || ''}` },
 
 
-        { field: "customerRefNo", headerName: "customer", width: 200, valueGetter: (params) => `${customers.find(customer => customer.customerRefNo == params.row.customerRefNo).label}` },
+        { field: "customerRefNo", headerName: "customer", width: 200, valueGetter: (params) => `${params.row.customerName}` },
 
-        { field: "7days", headerName: "0-7Days", width: 200, valueGetter: (params) => `${params.row.datediff <= 7 ? params.row.balance : '' || ''}` },
+     
+        { field: "7days", headerName: "0-7Days", width: 200, valueGetter: (params) => `${params.row.invoiceDate!="a"?(params.row.datediff <= 7 ? params.row.balance : ''):'' || ''}` },
 
-        { field: "30days", headerName: "7-30days", width: 150, valueGetter: (params) => `${params.row.datediff > 7 && params.row.datediff <= 30 ? params.row.balance : '' || ''}` },
+        { field: "30days", headerName: "8-15days", width: 150, valueGetter: (params) => `${params.row.invoiceDate!="a"?(params.row.datediff > 7 && params.row.datediff <= 14 ? params.row.balance : ''):'' || ''}` },
 
-        { field: "60days", headerName: "30-60days", width: 150, valueGetter: (params) => `${params.row.datediff > 30 && params.row.datediff <= 60 ? params.row.balance : '' || ''}` },
+        { field: "60days", headerName: "16-30days", width: 150, valueGetter: (params) => `${params.row.invoiceDate!="a"?(params.row.datediff > 14 && params.row.datediff <= 30 ? params.row.balance : ''):'' || ''}` },
 
-        { field: "90days", headerName: "60-90days", width: 150, valueGetter: (params) => ` ${params.row.datediff > 60 && params.row.datediff <= 90 ? params.row.balance : '' || ''}` },
+        { field: "90days", headerName: "31-60days", width: 150, valueGetter: (params) => ` ${params.row.invoiceDate!="a"?(params.row.datediff > 30 && params.row.datediff <= 60 ? params.row.balance : ''):'' || ''}` },
 
-        { field: "above90", headerName: "above 90", width: 150, valueGetter: (params) => ` ${params.row.datediff > 90 ? params.row.balance : '' || ''}` },
+        { field: "above90", headerName: "above 60 Days", width: 150, valueGetter: (params) => ` ${params.row.invoiceDate!="a"?(params.row.datediff > 60 ? params.row.balance.toFixed(2)  : ''):'' || ''}` },
 
 
 
@@ -315,11 +376,11 @@ const OutstandingSummary = () => {
                                 onChange={handleDateTypeChange}
                             // style={{}}
                             >
-                                <MenuItem key="1 Day" value="Last 1 Day">Last 1 Day</MenuItem>
-                                <MenuItem key="7 Days" value="Last 7 Days">Last 7 Days</MenuItem>
+                                <MenuItem key="1 Day" value="Last 1 Day">From Current Date</MenuItem>
+                                {/* <MenuItem key="7 Days" value="Last 7 Days">Last 7 Days</MenuItem>
                                 <MenuItem key="15 Days" value="Last 15 Days">Last 15 Days</MenuItem>
                                 <MenuItem key="1 Month" value="Last 1 Month">Last 1 Month</MenuItem>
-                                <MenuItem key="custom Range" value="Custom Range">Custom Range</MenuItem>
+                                <MenuItem key="custom Range" value="Custom Range">Custom Range</MenuItem> */}
                             </Select>
 
                         </FormControl>
@@ -388,7 +449,7 @@ const OutstandingSummary = () => {
                                 paginationModel: { page: 0, pageSize: 10 },
                             },
                         }}
-                        pageSizeOptions={[10, 20]}
+                        pageSizeOptions={[10, 20,50,100]}
                     />
                 </div>
 

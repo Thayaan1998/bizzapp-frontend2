@@ -30,19 +30,19 @@ const CustomerList = () => {
 
 
     const closePopUp = () => {
-        setOpenPopup(false);
-        setCustomer(null);
+        // setOpenPopup(false);
+        // setCustomer(null);
 
     }
 
     const closePopUp2 = async () => {
 
-        var customers = await getCustomersAction();
+        // var customers = await getCustomersAction();
 
-        setCustomers(customers)
-        setOpenPopup(false);
+        // setCustomers(customers)
+        // setOpenPopup(false);
 
-        //window.location.reload(false);
+        window.location.reload(false);
 
     }
 
@@ -194,10 +194,10 @@ const CustomerList = () => {
                         disableRowSelectionOnClick
                         initialState={{
                             pagination: {
-                                paginationModel: { page: 0, pageSize: 5 },
+                                paginationModel: { page: 0, pageSize: 10 },
                             },
                         }}
-                        pageSizeOptions={[5, 10]}
+                        pageSizeOptions={[10, 20,50,100]}
                     />
                 </div>
                 <br></br>

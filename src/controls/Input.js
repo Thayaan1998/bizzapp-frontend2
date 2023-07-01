@@ -5,11 +5,14 @@ export default function Input(props) {
 
     const {type, name, label, value,error=null, onChange,id } = props;
     return (
+        <div>
+        <label  style={{marginLeft:"30px",width:"300px",marginTop:"10px",marginRight:"30px"}}>{label}</label>
+        <br />
         <TextField
-            style={{marginLeft:"30px",width:"400px",marginTop:"20px",marginRight:"30px"}}
+            style={{marginLeft:"30px",width:"300px",marginRight:"30px",marginTop:"5px"}}
             type={type}
-            variant="outlined"
-            label={label}
+            // variant="standard"
+            // label={label}
             name={name}
             id={id}
             value={value}
@@ -18,6 +21,7 @@ export default function Input(props) {
 
        
         />
+        </div>
       
     )
 }

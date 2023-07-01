@@ -201,7 +201,7 @@ const ReceiptSummary = () => {
         { field: "paymentType", headerName: "Payment Type", width: 150, valueGetter: (params) => `${payemntTypes.find(paymentType => paymentType.masterConfigarationId == params.row.paymentId).name || ''}` },
 
 
-        { field: "amount", headerName: "Amount", width: 150, valueGetter: (params) => `${params.row.amount || ''}` },
+        { field: "amount", headerName: "Amount", width: 150, valueGetter: (params) => `${params.row.amount.toFixed(2)  || ''}` },
 
 
 
@@ -335,7 +335,7 @@ const ReceiptSummary = () => {
                                 paginationModel: { page: 0, pageSize: 10 },
                             },
                         }}
-                        pageSizeOptions={[10, 20]}
+                        pageSizeOptions={[10, 20,50,100]}
                     />
                 </div>
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { getActiveCustomersAction } from '../action/customerAction'
-import { getSalesOutstandingbyCustomerCodeAction, updateSalesOutstandingAction } from '../action/salesOutstandingAction'
+import { getSalesOutstandingbyCustomerCodeAction, updateSalesOutstandingAction,getSalesOutstandingbyCustomerCodeAction1 } from '../action/salesOutstandingAction'
 import { getPaymentTypeAction, getBanksAction } from '../action/masterConfigarionsAction'
 
 
@@ -178,7 +178,7 @@ const AddBillWiseRecipt = (props) => {
 
 
 
-    const getSalesOutstansing = async (customerId) => {
+    const getSalesOutstansing = async (customerId,receiptNo) => {
         var customers = await getActiveCustomersAction();
         var obj = customers.find(customer => customer.customerId == customerId);
 
@@ -187,9 +187,11 @@ const AddBillWiseRecipt = (props) => {
         // setCustomerNameAndCode(obj.name + " | " + obj.customerCode + " | " + obj.address)
 
         let value = {
-            "customerRefNo": obj.customerRefNo
+            "receiptNo":receiptNo
         };
         let a = await getSalesOutstandingbyCustomerCodeAction(value);
+
+        // console.log(value)
 
         setSalesOutStanding(a);
 
@@ -200,7 +202,7 @@ const AddBillWiseRecipt = (props) => {
         // document.getElementById("amount").value = billwiseRecipt.amount;
 
 
-        setSubTotal(billwiseRecipt.subTotal)
+        setSubTotal(billwiseRecipt.subTotal.toFixed(2))
 
         // setstate(
         //     {reciptNo:billwiseRecipt.reciptNo,
@@ -238,7 +240,7 @@ const AddBillWiseRecipt = (props) => {
     useEffect(() => {
         if (billwiseRecipt != null && openPopup) {
 
-            getSalesOutstansing(billwiseRecipt.customerId);
+            getSalesOutstansing(billwiseRecipt.customerId,billwiseRecipt.receiptNo);
             // loadData(billwiseRecipt.customerId);
             // setBank(billwiseRecipt.bankId);
             // setPaymentType(billwiseRecipt.paymentId);
@@ -342,7 +344,7 @@ const AddBillWiseRecipt = (props) => {
     useEffect(() => {
         if (billwiseRecipt != null && openPopup) {
 
-            setAmount(billwiseRecipt.amount)
+            setAmount(billwiseRecipt.amount.toFixed(2))
         }
 
     }, []);
@@ -420,11 +422,11 @@ const AddBillWiseRecipt = (props) => {
 
         { field: "invoiceDate", headerName: "Invoice Date", width: 250, valueGetter: (params) => `${params.row.invoiceDate1 || ''}` },
 
-        { field: "invoiceAmount", headerName: "Invoice Amount", width: 150, valueGetter: (params) => `${params.row.invoiceAmount || ''}` },
+        { field: "invoiceAmount", headerName: "Invoice Amount", width: 150, valueGetter: (params) => `${params.row.invoiceAmount.toFixed(2) || ''}` },
 
-        { field: "receiptAmount", headerName: "Paid Amount", width: 200, valueGetter: (params) => `${params.row.receiptAmount != null ? params.row.receiptAmount : "0" || ''}` },
+        { field: "receiptAmount", headerName: "Paid Amount", width: 200, valueGetter: (params) => `${params.row.receiptAmount != null ? params.row.receiptAmount.toFixed(2) : "0" || ''}` },
 
-        { field: "balance", headerName: "Balance", width: 200, valueGetter: (params) => `${params.row.balance != null ? params.row.balance : "0" || ''}` },
+        { field: "balance", headerName: "Balance", width: 200, valueGetter: (params) => `${params.row.balance != null ? params.row.balance.toFixed(2) : "0" || ''}` },
 
         {
             field: "amount",
@@ -454,7 +456,7 @@ const AddBillWiseRecipt = (props) => {
                                     total = parseFloat(document.getElementById(checkList[i]).value) + total;
                                 }
                             }
-                            setSubTotal(total);
+                            setSubTotal(total.toFixed(2));
                             return;
                         } else {
                             var total = 0;
@@ -465,7 +467,7 @@ const AddBillWiseRecipt = (props) => {
                                     total = parseFloat(document.getElementById(checkList[i]).value) + total;
                                 }
                             }
-                            setSubTotal(total);
+                            setSubTotal(total.toFixed(2));
                             return;
                         }
                     }
@@ -483,7 +485,7 @@ const AddBillWiseRecipt = (props) => {
                         label="Enter Amount"
                         height="10px"
                         size="small"
-                        value={found == undefined ? "" : found.amount}
+                        value={found == undefined ? "" : found.amount.toFixed(2)}
                         onChange={handleInputChange}
                         variant="standard"
                     />;
@@ -507,14 +509,15 @@ const AddBillWiseRecipt = (props) => {
     // const { children, openPopup} = props;
     const classes = useStyles();
 
+    const zeroPad = (num, places) => String(num).padStart(places, '0')
 
     return (
         <Dialog open={openPopup} maxWidth="xl" classes={{ paper: classes.dialogWrapper }}>
             <DialogTitle style={{ marginLeft: "0px" }}>
                 <div >
-                    <Typography variant="h4" component="div" style={{ flexGrow: 1, marginLeft: "30px" }}>
+                    {/* <Typography variant="h4" component="div" style={{ flexGrow: 1, marginLeft: "30px" }}>
                         {title}
-                    </Typography>
+                    </Typography> */}
 
 
                     <Grid container>
@@ -546,7 +549,10 @@ const AddBillWiseRecipt = (props) => {
                             }
                         </Grid>
 
-                        <Grid item alignItems="stretch" style={{ display: "flex" }}>
+                        <Grid item >
+                            <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Select Customer</label>
+                            <br />
+
                             <Autocomplete
                                 disablePortal
                                 id="combo-box-demo"
@@ -559,7 +565,7 @@ const AddBillWiseRecipt = (props) => {
                                         let value = {
                                             "customerRefNo": newValue.customerRefNo
                                         };
-                                        let a = await getSalesOutstandingbyCustomerCodeAction(value);
+                                        let a = await getSalesOutstandingbyCustomerCodeAction1(value);
 
                                         setSalesOutStanding(a);
                                     } else {
@@ -568,18 +574,18 @@ const AddBillWiseRecipt = (props) => {
 
                                 }}
                                 getOptionLabel={(option) => {
-                                    return option != "" ? option.customerRefNo + " | " + option.label : "";
+                                    return option != "" ? "CUST " + zeroPad(option.customerId, 4) + " | " + option.customerRefNo + " | " + option.label : "";
 
                                 }
                                 }
                                 options={customers}
-                                sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}
-                                renderInput={(params) => <TextField {...params} label="Select Customer" />}
+                                sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "370px", marginTop: "5px", marginRight: "30px" }}
+                                renderInput={(params) => <TextField {...params} />}
 
                             />
 
                         </Grid>
-                        <Grid item alignItems="stretch" style={{ display: "flex" }}>
+                        <Grid item >
 
                             {
 
@@ -613,93 +619,113 @@ const AddBillWiseRecipt = (props) => {
                     </Grid>
 
 
+                    <Grid container>
+                        <Grid item>
+                            <LocalizationProvider dateAdapter={AdapterDayjs} >
+                                <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Date</label>
+                                <br />
+                                <DatePicker
+                                    value={date}
+                                    onChange={(newValue) => setDate(newValue)}
+                                    sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "300px", marginTop: "5px", marginRight: "30px" }} />
+                            </LocalizationProvider>
+                        </Grid>
+                        <Grid item>
+                            <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Payment Type</label>
+                            <br />
+                            <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "150px", marginTop: "5px", marginRight: "30px" }}>
+                                <InputLabel id="demo-simple-select-required-label"></InputLabel>
 
+                                <Select
+                                    labelId="demo-simple-select-required-label"
+                                    id="demo-simple-select-required"
+                                    value={paymentType}
+                                    label="Select Payment Type"
+                                    onChange={handlePaymentTypeChange}
+                                // style={{}}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+
+                                    {
+                                        payemntTypes.map(
+                                            // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
+                                            paymentType => (<MenuItem key={paymentType.masterConfigarationId} value={paymentType.masterConfigarationId}>{paymentType.name}</MenuItem>)
+                                        )
+                                    }
+                                </Select>
+                                {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
+                            </FormControl>
+                        </Grid>
+                        <Grid item>
+                            <label style={{ marginLeft: "10px", width: "120px", marginTop: "10px", marginRight: "30px" }}>Bank</label>
+                            <br />
+
+                            <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "10px", width: "180px", marginTop: "5px", marginRight: "30px" }}>
+                                <InputLabel id="demo-simple-select-required-label"> </InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-required-label"
+                                    id="demo-simple-select-required"
+                                    value={bank}
+                                    label="Select Bank"
+                                    onChange={handleBanksChange}
+                                // style={{}}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+
+                                    {
+                                        banks.map(
+                                            // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
+                                            bank => (<MenuItem key={bank.masterConfigarationId} value={bank.masterConfigarationId}>{bank.name}</MenuItem>)
+                                        )
+                                    }
+                                </Select>
+                                {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
+                            </FormControl>
+                        </Grid>
+                        <Grid item>
+                            {showCheque &&
+                                <Controls.Input
+                                    type="text"
+                                    name="Cheque Number"
+                                    label="Cheque Number"
+                                    id="chequeNumber"
+                                    //  value={chequeNo}
+                                    onChange={handleInputChange}
+
+                                // error={errors.name}
+                                // onChange={handleInputChange}
+                                />
+                            }
+
+                            {chequeNumber != '' &&
+                                <Controls.Input
+                                    type="text"
+                                    name="Cheque Number"
+                                    label="Cheque Number"
+                                    id="chequeNumber"
+                                    value={chequeNumber}
+                                    onChange={handleInputChange}
+
+                                // error={errors.name}
+                                // onChange={handleInputChange}
+                                />
+                            }
+
+                        </Grid>
+                    </Grid>
 
 
 
 
                     {/* <br></br> */}
-                    <LocalizationProvider dateAdapter={AdapterDayjs} >
-                        <DatePicker
-                            value={date}
-                            onChange={(newValue) => setDate(newValue)}
-                            sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }} />
-                    </LocalizationProvider>
 
-                    <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "180px", marginTop: "20px", marginRight: "30px" }}>
-                        <InputLabel id="demo-simple-select-required-label">Select Payment Type</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-required-label"
-                            id="demo-simple-select-required"
-                            value={paymentType}
-                            label="Select Payment Type"
-                            onChange={handlePaymentTypeChange}
-                        // style={{}}
-                        >
-                            <MenuItem value="">
-                                <em>None</em>
-                            </MenuItem>
 
-                            {
-                                payemntTypes.map(
-                                    // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
-                                    paymentType => (<MenuItem key={paymentType.masterConfigarationId} value={paymentType.masterConfigarationId}>{paymentType.name}</MenuItem>)
-                                )
-                            }
-                        </Select>
-                        {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
-                    </FormControl>
 
-                    <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "10px", width: "180px", marginTop: "20px", marginRight: "30px" }}>
-                        <InputLabel id="demo-simple-select-required-label"> Select Bank</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-required-label"
-                            id="demo-simple-select-required"
-                            value={bank}
-                            label="Select Bank"
-                            onChange={handleBanksChange}
-                        // style={{}}
-                        >
-                            <MenuItem value="">
-                                <em>None</em>
-                            </MenuItem>
 
-                            {
-                                banks.map(
-                                    // item => (<MenuItem key={item.authorId} value={item.authorId}>{item.authorName}</MenuItem>)
-                                    bank => (<MenuItem key={bank.masterConfigarationId} value={bank.masterConfigarationId}>{bank.name}</MenuItem>)
-                                )
-                            }
-                        </Select>
-                        {/* <FormHelperText>{customerNameAndCode}</FormHelperText> */}
-                    </FormControl>
-                    {showCheque &&
-                        <Controls.Input
-                            type="text"
-                            name="Cheque Number"
-                            label="Cheque Number"
-                            id="chequeNumber"
-                            //  value={chequeNo}
-                            onChange={handleInputChange}
-
-                        // error={errors.name}
-                        // onChange={handleInputChange}
-                        />
-                    }
-
-                    {chequeNumber!='' &&
-                        <Controls.Input
-                            type="text"
-                            name="Cheque Number"
-                            label="Cheque Number"
-                            id="chequeNumber"
-                            value={chequeNumber}
-                            onChange={handleInputChange}
-
-                        // error={errors.name}
-                        // onChange={handleInputChange}
-                        />
-                    }
 
 
 

@@ -41,12 +41,12 @@ const SalesList = () => {
 
     const closePopUp2 = async () => {
 
-        var sales = await getSalesAction();
+        // var sales = await getSalesAction();
 
-        setSales(sales)
-        setOpenPopup(false);
+        // setSales(sales)
+        // setOpenPopup(false);
 
-        //window.location.reload(false);
+        window.location.reload(false);
 
     }
 
@@ -141,7 +141,7 @@ const SalesList = () => {
 
         { field: "customerRefNo", headerName: "customer ", width: 200, valueGetter: (params) => `${params.row.customerRefNo +" | "+params.row.customerName || ''}` },
 
-        { field: "salesPerson", headerName: "Sales Person", width: 200, valueGetter: (params) => `${params.row.code+" | "+params.row.salesperson  || ''}` },
+        { field: "salesPerson", headerName: "Sales Person", width: 200, valueGetter: (params) => `${params.row.code!=null?params.row.code+" | "+params.row.salesperson:""  || ''}` },
 
         { field: "total", headerName: "Total", width: 150, valueGetter: (params) => `${params.row.total || ''}` },
 
@@ -217,7 +217,7 @@ const SalesList = () => {
                 <Button
                     variant="contained"
                     component="label"
-                    style={{ height: "44px" }}
+                    style={{ height: "40px",width:'150px' }}
 
                 >
                     Upload File
@@ -248,10 +248,10 @@ const SalesList = () => {
                         }}
                         initialState={{
                             pagination: {
-                                paginationModel: { page: 0, pageSize: 5 },
+                                paginationModel: { page: 0, pageSize: 10 },
                             },
                         }}
-                        pageSizeOptions={[5, 10]}
+                        pageSizeOptions={[10, 20,50,100]}
                     />
                 </div>
                 <br></br>

@@ -92,7 +92,7 @@ const AddOrEditMasterConfigaration = (props) => {
         e.preventDefault()
 
         if (validate()) {
-            if (type != ""&&type != null) {
+            if (type != "" && type != null) {
                 try {
 
                     var values = {
@@ -123,7 +123,7 @@ const AddOrEditMasterConfigaration = (props) => {
                     throw error;
 
                 }
-            }else{
+            } else {
                 alert("please select the type")
             }
 
@@ -143,10 +143,10 @@ const AddOrEditMasterConfigaration = (props) => {
 
 
     const typesName = [
-        { label: 'Bank Name'},
-        { label: 'Sales Person'},
-        { label: 'Payment Type'},
-        { label: 'Area Code'}
+        { label: 'Bank Name' },
+        { label: 'Sales Person' },
+        { label: 'Payment Type' },
+        { label: 'Area Code' }
     ];
 
     return (
@@ -162,26 +162,27 @@ const AddOrEditMasterConfigaration = (props) => {
                     error={errors.code}
                     onChange={handleInputChange}
                 />
-                <br></br>
 
-
-
+                <br />
+                <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Select MasterConfigartion Type</label>
+                <br />
 
                 <Autocomplete
                     disablePortal
                     id="combo-box-demo"
                     value={type}
                     onChange={(event, newValue) => {
-                       // console.log(newValue)
+                        // console.log(newValue)
                         setType(newValue);
                     }}
                     options={typesName}
-                    sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}
-                    renderInput={(params) => <TextField {...params} label="Select Type" error={errors.type} />}
+                    sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "300px", marginTop: "5px", marginRight: "30px" }}
+                    renderInput={(params) => <TextField {...params} label="" error={errors.type} />}
 
                 />
 
-          
+                <br />
+
                 <Controls.Input
                     type="text"
                     name="name"
@@ -190,13 +191,16 @@ const AddOrEditMasterConfigaration = (props) => {
                     error={errors.name}
                     onChange={handleInputChange}
                 />
-                <br></br>
-              
+               <br />
+                <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Description</label>
+                <br />
+
+
                 <TextField
-                    style={{ marginLeft: "30px", width: "400px", marginTop: "20px", marginRight: "30px" }}
+                    style={{ marginLeft: "30px", width: "300px", marginTop: "5px", marginRight: "30px" }}
                     type="description"
                     name="description"
-                    label="Description"
+                    // label="Description"
                     value={description}
                     error={errors.description}
                     onChange={handleInputChange}
