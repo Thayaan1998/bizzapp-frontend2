@@ -4,6 +4,7 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { postMasterConfigarationAction, updateMasterConfigarationAction } from "../action/masterConfigarionsAction";
 
+import { Grid } from "@mui/material";
 
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
@@ -152,37 +153,40 @@ const AddOrEditMasterConfigaration = (props) => {
     return (
         <div style={{ float: 'left' }}>
             <form noValidate autoComplete="off" onSubmit={handleSubmit}>
+                <Grid container>
+                    <Grid item>
 
+                        <Controls.Input
+                            type="text"
+                            name="code"
+                            label="Code"
+                            value={code}
+                            error={errors.code}
+                            onChange={handleInputChange}
+                        />
+                    </Grid>
+                    <Grid item>
+                        {/* <br /> */}
+                        <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Select MasterConfigartion Type</label>
+                        <br />
 
-                <Controls.Input
-                    type="text"
-                    name="code"
-                    label="Code"
-                    value={code}
-                    error={errors.code}
-                    onChange={handleInputChange}
-                />
+                        <Autocomplete
+                            disablePortal
+                            id="combo-box-demo"
+                            value={type}
+                            onChange={(event, newValue) => {
+                                // console.log(newValue)
+                                setType(newValue);
+                            }}
+                            options={typesName}
+                            sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "300px", marginTop: "5px", marginRight: "30px" }}
+                            renderInput={(params) => <TextField {...params} label="" error={errors.type} />}
 
-                <br />
-                <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Select MasterConfigartion Type</label>
-                <br />
+                        />
 
-                <Autocomplete
-                    disablePortal
-                    id="combo-box-demo"
-                    value={type}
-                    onChange={(event, newValue) => {
-                        // console.log(newValue)
-                        setType(newValue);
-                    }}
-                    options={typesName}
-                    sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "300px", marginTop: "5px", marginRight: "30px" }}
-                    renderInput={(params) => <TextField {...params} label="" error={errors.type} />}
-
-                />
-
-                <br />
-
+                        <br />
+                    </Grid>
+                </Grid>
                 <Controls.Input
                     type="text"
                     name="name"
@@ -191,7 +195,7 @@ const AddOrEditMasterConfigaration = (props) => {
                     error={errors.name}
                     onChange={handleInputChange}
                 />
-               <br />
+                <br />
                 <label style={{ marginLeft: "30px", width: "300px", marginTop: "10px", marginRight: "30px" }}>Description</label>
                 <br />
 

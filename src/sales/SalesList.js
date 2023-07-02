@@ -113,7 +113,7 @@ const SalesList = () => {
                                 invoiceDate: ExcelDateToJSDate(rows[i]['Invoice Date']),
                                 total: rows[i]['Total']
                             };
-                           console.log(values)
+                        //    console.log(values)
                             await insertImportSales(values);
                             
                             //console.log(values)

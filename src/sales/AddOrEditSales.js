@@ -302,7 +302,7 @@ const AddOrEditSales = (props) => {
                                 // document.getElementById("address").value=newValue.address;
                             }}
                             getOptionLabel={(option) => {
-                                return option != "" ? "CUST " + zeroPad(option.customerId, 4) + " | "+ option.customerRefNo + " | " + option.label : "";
+                                return option != "" ? "C" + zeroPad(option.customerId-1, 4) + " | "+ option.customerRefNo + " | " + option.label : "";
 
                             }
                             }

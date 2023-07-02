@@ -166,7 +166,7 @@ const AddOrEditCustomer = (props) => {
     const getAutoIncrementId = async () => {
 
         var getAutoIncrementId = await getAutoIncrementIdAction();
-        setAutoValue("CUST" + zeroPad(getAutoIncrementId[0].AUTO_INCREMENT, 4))
+        setAutoValue("C" + zeroPad(getAutoIncrementId[0].AUTO_INCREMENT-1, 4))
     }
 
     useEffect(() => {
@@ -178,7 +178,7 @@ const AddOrEditCustomer = (props) => {
         if (customer == null) {
             getAutoIncrementId();
         } else {
-            setAutoValue("CUST" + zeroPad(customer.customerId, 4))
+            setAutoValue("C" + zeroPad(customer.customerId-1, 4))
         }
 
 

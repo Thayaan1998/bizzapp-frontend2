@@ -78,7 +78,7 @@ const CustomerList = () => {
 
     const columns = [
 
-        { field: "customerId", headerName: "Customer Id", width: 150, valueGetter: (params) => `${"cu"+zeroPad(params.row.customerId ,4)|| ''}` },
+        { field: "customerId", headerName: "Customer Id", width: 150, valueGetter: (params) => `${"C"+zeroPad(params.row.customerId-1 ,4)|| ''}` },
 
         { field: 'customerRefNo', headerName: 'Customer RefNo', width: 150, valueGetter: (params) => `${params.row.customerRefNo || ''}` },
 
