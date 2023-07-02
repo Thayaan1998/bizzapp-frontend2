@@ -133,7 +133,9 @@ const SalesSummary = () => {
 
 
         // startY is basically margin-top
-        doc.autoTable(tableColumn, tableRows, { startY: 60 });
+        doc.autoTable(tableColumn, tableRows, { startY: 60,   styles: {
+            halign: 'right'
+        }, });
 
         // doc.text("ss", 14, 15);
         // we define the name of our PDF file.
@@ -193,7 +195,7 @@ const SalesSummary = () => {
 
         { field: "salesPerson", headerName: "Sales Person", width: 200, valueGetter: (params) => `${params.row.salesperson || ''}` },
 
-        { field: "total", headerName: "Good Values", width: 150, valueGetter: (params) => `${params.row.total.toFixed(2) || ''}` },
+        { field: "total", headerName: "Good Values", width: 150,align:'right', valueGetter: (params) => `${params.row.total.toFixed(2) || ''}` },
 
 
     ];

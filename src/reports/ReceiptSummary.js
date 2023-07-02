@@ -142,7 +142,9 @@ const ReceiptSummary = () => {
 
 
         // startY is basically margin-top
-        doc.autoTable(tableColumn, tableRows, { startY: 50 });
+        doc.autoTable(tableColumn, tableRows, { startY: 50,   styles: {
+            halign: 'right'
+        }, });
 
         // doc.text("ss", 14, 15);
         // we define the name of our PDF file.
@@ -201,7 +203,7 @@ const ReceiptSummary = () => {
         { field: "paymentType", headerName: "Payment Type", width: 150, valueGetter: (params) => `${payemntTypes.find(paymentType => paymentType.masterConfigarationId == params.row.paymentId).name || ''}` },
 
 
-        { field: "amount", headerName: "Amount", width: 150, valueGetter: (params) => `${params.row.amount.toFixed(2)  || ''}` },
+        { field: "amount", headerName: "Amount", width: 150,align:'right', valueGetter: (params) => `${params.row.amount.toFixed(2)  || ''}` },
 
 
 

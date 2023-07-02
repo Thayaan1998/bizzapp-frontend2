@@ -151,7 +151,7 @@ const SalesList = () => {
 
         { field: "salesPerson", headerName: "Sales Person", width: 200, valueGetter: (params) => `${params.row.code != null ? params.row.code + " | " + params.row.salesperson : "" || ''}` },
 
-        { field: "total", headerName: "Total", width: 150, valueGetter: (params) => `${params.row.total.toFixed(2) || ''}` },
+        { field: "total", headerName: "Total", width: 150, align:'right', valueGetter: (params) => `${params.row.total.toFixed(2) || ''}` },
 
         {
             field: "edit",
