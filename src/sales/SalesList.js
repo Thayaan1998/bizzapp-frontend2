@@ -147,9 +147,9 @@ const SalesList = () => {
         { field: "invoiceDate", headerName: "Invoice Date", width: 100, valueGetter: (params) => `${params.row.invoiceDate1 || ''}` },
 
 
-        { field: "customerRefNo", headerName: "Customer ", width: 250, valueGetter: (params) => `${params.row.customerRefNo + " | " + params.row.customerName || ''}` },
+        { field: "customerRefNo", headerName: "Customer ", width: 320, valueGetter: (params) => `${params.row.customerRefNo + " | " + params.row.customerName || ''}` },
 
-        { field: "salesPerson", headerName: "Sales Person", width: 200, valueGetter: (params) => `${params.row.code != null ? params.row.code + " | " + params.row.salesperson : "" || ''}` },
+        { field: "salesPerson", headerName: "Sales Person", width: 120, valueGetter: (params) => `${params.row.code != null ? params.row.code : "" || ''}` },
 
         { field: "total", headerName: "Total", width: 150, align:'right', valueGetter: (params) => `${params.row.total.toFixed(2) || ''}` },
 

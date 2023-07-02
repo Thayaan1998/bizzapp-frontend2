@@ -89,8 +89,8 @@ const OutstandingSummary = () => {
     const generatePDF = () => {
         const doc = new jsPDF('l', 'mm', [297, 210]);
 
-        const tableColumn1 = ["Invoice No", "invoice Date", "customer", "Customer Code", "0-7 Days", "8-15 Days", "16-30 Days", "30-60 Days", "above 60 Days"];
-        const tableColumn2 = ["customer", "Customer Code", "0-7 Days", "8-15 Days", "16-30 Days", "30-60 Days", "above 60 Days"];
+        const tableColumn1 = ["Invoice No", "Invoice Date", "Customer", "Customer RefNo", "0-7 Days", "8-15 Days", "16-30 Days", "30-60 Days", "Above 60 Days"];
+        const tableColumn2 = ["Customer", "Customer RefNo", "0-7 Days", "8-15 Days", "16-30 Days", "30-60 Days", "Above 60 Days"];
 
         const tableRows1 = [];
         const tableRows2 = [];
@@ -111,7 +111,7 @@ const OutstandingSummary = () => {
                 recipt.invoiceNo,
                 recipt.invoiceDate,
                 customers.find(customer => customer.customerRefNo == recipt.customerRefNo).label,
-                "C" + zeroPad(customers.find(customer => customer.customerRefNo == recipt.customerRefNo).customerId - 1, 4),
+                recipt.customerRefNo,
                 recipt.datediff <= 7 ? recipt.balance.toFixed(2) : '',
                 recipt.datediff > 8 && recipt.datediff <= 15 ? recipt.balance.toFixed(2) : '',
                 recipt.datediff > 15 && recipt.datediff <= 30 ? recipt.balance.toFixed(2) : '',
@@ -124,7 +124,7 @@ const OutstandingSummary = () => {
 
             const ticketData2 = [
                 customers.find(customer => customer.customerRefNo == recipt.customerRefNo).label,
-                "C" + zeroPad(customers.find(customer => customer.customerRefNo == recipt.customerRefNo).customerId - 1, 4),
+                recipt.customerRefNo,
                 recipt.datediff <= 7 ? recipt.balance.toFixed(2) : '',
                 recipt.datediff > 8 && recipt.datediff <= 15 ? recipt.balance.toFixed(2) : '',
                 recipt.datediff > 15 && recipt.datediff <= 30 ? recipt.balance.toFixed(2) : '',
@@ -230,7 +230,7 @@ const OutstandingSummary = () => {
         for (var i = 0; i < sales.length; i++) {
             //  console.log(customers);
             sales[i]["customerName"] = customers.find(customer => customer.customerRefNo == sales[i].customerRefNo).label
-            sales[i]["customerCode"] = "C" + zeroPad(customers.find(customer => customer.customerRefNo == sales[i].customerRefNo).customerId - 1, 4);
+            sales[i]["customerRefNo"] = customers.find(customer => customer.customerRefNo == sales[i].customerRefNo).customerRefNo;
 
         }
         console.log(customers);
@@ -299,21 +299,21 @@ const OutstandingSummary = () => {
 
         { field: 'invoiceNo', headerName: 'Invoice No', width: 100, valueGetter: (params) => `${params.row.invoiceDate != "a" ? params.row.invoiceNo : "" || ''}` },
 
-        { field: "invoiceDate", headerName: "invoice Date", width: 100, valueGetter: (params) => `${params.row.invoiceDate != "a" ? params.row.invoiceDate : "" || ''}` },
+        { field: "invoiceDate", headerName: "Invoice Date", width: 100, valueGetter: (params) => `${params.row.invoiceDate != "a" ? params.row.invoiceDate : "" || ''}` },
 
-        { field: "customerCode", headerName: "customer Code", width: 130, valueGetter: (params) => `${params.row.customerCode}` },
+        { field: "customerCode", headerName: "Customer RefNo", width: 130, valueGetter: (params) => `${params.row.customerRefNo}` },
 
-        { field: "customerRefNo", headerName: "customer", width: 200, valueGetter: (params) => `${params.row.customerName}` },
+        { field: "customerRefNo", headerName: "Customer", width: 200, valueGetter: (params) => `${params.row.customerName}` },
 
-        { field: "7days", headerName: "0-7Days", align: 'right', width: 150, valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff <= 7 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
+        { field: "7days", headerName: "0-7Days", align: 'right', width: 120, valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff <= 7 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
 
-        { field: "30days", headerName: "8-15days", align: 'right', width: 150, valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff > 7 && params.row.datediff <= 14 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
+        { field: "30days", headerName: "8-15days", align: 'right', width: 120, valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff > 7 && params.row.datediff <= 14 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
 
-        { field: "60days", headerName: "16-30days", align: 'right', width: 150, valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff > 14 && params.row.datediff <= 30 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
+        { field: "60days", headerName: "16-30days", align: 'right', width: 120, valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff > 14 && params.row.datediff <= 30 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
 
-        { field: "90days", headerName: "31-60days", align: 'right', width: 150, valueGetter: (params) => ` ${params.row.invoiceDate != "a" ? (params.row.datediff > 30 && params.row.datediff <= 60 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
+        { field: "90days", headerName: "31-60days", align: 'right', width: 120, valueGetter: (params) => ` ${params.row.invoiceDate != "a" ? (params.row.datediff > 30 && params.row.datediff <= 60 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
 
-        { field: "above90", headerName: "above 60 Days", align: 'right', width: 150, valueGetter: (params) => ` ${params.row.invoiceDate != "a" ? (params.row.datediff > 60 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
+        { field: "above90", headerName: "Above 60 Days", align: 'right', width: 120, valueGetter: (params) => ` ${params.row.invoiceDate != "a" ? (params.row.datediff > 60 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
 
 
 
@@ -327,19 +327,19 @@ const OutstandingSummary = () => {
         // { field: "invoiceDate", headerName: "invoice Date", width: 150, valueGetter: (params) => `${params.row.invoiceDate || ''}` },
 
 
-        { field: "customerRefNo", headerName: "customer", width: 200, valueGetter: (params) => `${params.row.customerName}` },
+        { field: "customerRefNo", headerName: "Customer", width: 200, valueGetter: (params) => `${params.row.customerName}` },
 
-        { field: "customerCode", headerName: "customer Code", width: 200, valueGetter: (params) => `${params.row.customerCode}` },
+        { field: "customerCode", headerName: "Customer RefNo", width: 200, valueGetter: (params) => `${params.row.customerRefNo}` },
 
         { field: "7days", headerName: "0-7Days", width: 200, align: 'right', valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff <= 7 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
 
-        { field: "30days", headerName: "8-15days", width: 150, align: 'right', valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff > 7 && params.row.datediff <= 14 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
+        { field: "30days", headerName: "8-15days", width: 120, align: 'right', valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff > 7 && params.row.datediff <= 14 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
 
-        { field: "60days", headerName: "16-30days", width: 150, align: 'right', valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff > 14 && params.row.datediff <= 30 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
+        { field: "60days", headerName: "16-30days", width: 120, align: 'right', valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff > 14 && params.row.datediff <= 30 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
 
-        { field: "90days", headerName: "31-60days", width: 150, align: 'right', valueGetter: (params) => ` ${params.row.invoiceDate != "a" ? (params.row.datediff > 30 && params.row.datediff <= 60 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
+        { field: "90days", headerName: "31-60days", width: 120, align: 'right', valueGetter: (params) => ` ${params.row.invoiceDate != "a" ? (params.row.datediff > 30 && params.row.datediff <= 60 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
 
-        { field: "above90", headerName: "above 60 Days", width: 150, align: 'right', valueGetter: (params) => ` ${params.row.invoiceDate != "a" ? (params.row.datediff > 60 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
+        { field: "above90", headerName: "Above 60 Days", width: 120, align: 'right', valueGetter: (params) => ` ${params.row.invoiceDate != "a" ? (params.row.datediff > 60 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
 
 
 
@@ -393,7 +393,7 @@ const OutstandingSummary = () => {
                                 onChange={handleDateTypeChange}
                             // style={{}}
                             >
-                                <MenuItem key="1 Day" value="Last 1 Day">As a Today</MenuItem>
+                                <MenuItem key="1 Day" value="Last 1 Day">As  Today</MenuItem>
                                 {/* <MenuItem key="7 Days" value="Last 7 Days">Last 7 Days</MenuItem>
                                 <MenuItem key="15 Days" value="Last 15 Days">Last 15 Days</MenuItem>
                                 <MenuItem key="1 Month" value="Last 1 Month">Last 1 Month</MenuItem>
