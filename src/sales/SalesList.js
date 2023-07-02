@@ -12,7 +12,8 @@ import SideBar from '../SideBar'
 import dayjs from 'dayjs';
 
 import Button from '@mui/material/Button';
-
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 import AddOrEditSales from './AddOrEditSales'
@@ -73,24 +74,27 @@ const SalesList = () => {
     const csvLink = useRef()
 
     function ExcelDateToJSDate(serial) {
-        var utc_days  = Math.floor(serial - 25569);
-        var utc_value = utc_days * 86400;                                        
+        var utc_days = Math.floor(serial - 25569);
+        var utc_value = utc_days * 86400;
         var date_info = new Date(utc_value * 1000);
-     
+
         var fractional_day = serial - Math.floor(serial) + 0.0000001;
-     
+
         var total_seconds = Math.floor(86400 * fractional_day);
-     
+
         var seconds = total_seconds % 60;
-     
+
         total_seconds -= seconds;
-     
-        return  dayjs(new Date(date_info.getFullYear(), date_info.getMonth(), date_info.getDate()+1) );
-     }
+
+        return dayjs(new Date(date_info.getFullYear(), date_info.getMonth(), date_info.getDate() + 1));
+    }
 
     const handleImport = async ($event) => {
+        
+        // setOpen(true);
         const files = $event.target.files;
         if (window.confirm("Do you want to upload this file")) {
+            setOpen(true);
             if (files.length) {
                 const file = files[0];
                 const reader = new FileReader();
@@ -101,7 +105,7 @@ const SalesList = () => {
                     if (sheets.length) {
 
                         const rows = utils.sheet_to_json(wb.Sheets[sheets[0]]);
-                    //    console.log(rows)
+                        //    console.log(rows)
                         // setMovies(rows)
 
                         for (var i = 0; i < rows.length; i++) {
@@ -113,37 +117,41 @@ const SalesList = () => {
                                 invoiceDate: ExcelDateToJSDate(rows[i]['Invoice Date']),
                                 total: rows[i]['Total']
                             };
-                        //    console.log(values)
+                            //    console.log(values)
                             await insertImportSales(values);
-                            
+
                             //console.log(values)
                         }
 
                     }
                     await getSales();
+                    alert("sales Details Added Successfully")
+                    setOpen(false);
+
+
                 }
                 reader.readAsArrayBuffer(file);
-                alert("sales Details Added Successfully")
-               // window.location.reload();
+                // window.location.reload();
 
             }
+
         }
-       
+
     }
 
 
     const columns = [
 
-        { field: 'invoiceNo', headerName: 'Invoice No', width: 150, valueGetter: (params) => `${params.row.invoiceNo || ''}` },
+        { field: 'invoiceNo', headerName: 'Invoice No', width: 100, valueGetter: (params) => `${params.row.invoiceNo || ''}` },
 
-        { field: "invoiceDate", headerName: "invoice Date", width: 150, valueGetter: (params) => `${params.row.invoiceDate1 || ''}` },
+        { field: "invoiceDate", headerName: "invoice Date", width: 100, valueGetter: (params) => `${params.row.invoiceDate1 || ''}` },
 
 
-        { field: "customerRefNo", headerName: "customer ", width: 200, valueGetter: (params) => `${params.row.customerRefNo +" | "+params.row.customerName || ''}` },
+        { field: "customerRefNo", headerName: "customer ", width: 250, valueGetter: (params) => `${params.row.customerRefNo + " | " + params.row.customerName || ''}` },
 
-        { field: "salesPerson", headerName: "Sales Person", width: 200, valueGetter: (params) => `${params.row.code!=null?params.row.code+" | "+params.row.salesperson:""  || ''}` },
+        { field: "salesPerson", headerName: "Sales Person", width: 200, valueGetter: (params) => `${params.row.code != null ? params.row.code + " | " + params.row.salesperson : "" || ''}` },
 
-        { field: "total", headerName: "Total", width: 150, valueGetter: (params) => `${params.row.total || ''}` },
+        { field: "total", headerName: "Total", width: 150, valueGetter: (params) => `${params.row.total.toFixed(2) || ''}` },
 
         {
             field: "edit",
@@ -190,15 +198,34 @@ const SalesList = () => {
         }
     ];
 
+    const [open, setOpen] = React.useState(false);
+    const handleClose = () => {
+        setOpen(false);
+    };
+    const handleOpen = () => {
+        setOpen(true);
+    };
+
 
 
 
     return (
         <div>
+
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={open}
+                // onClick={handleClose}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+
             <SideBar heading="Sales"></SideBar>
 
 
             <div style={{ marginLeft: "260px", marginTop: "50px" }}>
+            {/* <Button onClick={handleOpen}>Show backdrop</Button> */}
+
                 <Controls.But
                     text="Create "
                     onClick={() => createOnClick()}
@@ -217,7 +244,7 @@ const SalesList = () => {
                 <Button
                     variant="contained"
                     component="label"
-                    style={{ height: "40px",width:'150px' }}
+                    style={{ height: "40px", width: '150px' }}
 
                 >
                     Upload File
@@ -251,7 +278,7 @@ const SalesList = () => {
                                 paginationModel: { page: 0, pageSize: 10 },
                             },
                         }}
-                        pageSizeOptions={[10, 20,50,100]}
+                        pageSizeOptions={[10, 20, 50, 100]}
                     />
                 </div>
                 <br></br>

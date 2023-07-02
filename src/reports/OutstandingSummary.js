@@ -222,26 +222,26 @@ const OutstandingSummary = () => {
           sales[i]["customerName"]=customers.find(customer => customer.customerRefNo == sales[i].customerRefNo).label
         }
 
-        let already=[]
-        for(var j=0;j<sales.length;j++){
+    //     let already=[]
+    //     for(var j=0;j<sales.length;j++){
 
-           let a= already.find(e=>e==sales[j]["customerName"])
+    //        let a= already.find(e=>e==sales[j]["customerName"])
 
-           if(a==null){
-            already.push(sales[j]["customerName"])
-            sales.push({"customerName":sales[j]["customerName"],"invoiceDate":"a","invoiceNo":"a"+j,"customerRefNo":"a"+j})
-           }
+    //        if(a==null){
+    //         already.push(sales[j]["customerName"])
+    //         sales.push({"customerName":sales[j]["customerName"],"invoiceDate":"a","invoiceNo":"a"+j,"customerRefNo":"a"+j})
+    //        }
 
-        }
+    //     }
 
-        console.log(already)
+    //     console.log(already)
 
-     //   sales.sort((a,b) => a.customerName - b.customerName);
+    //  //   sales.sort((a,b) => a.customerName - b.customerName);
     
 
-        let sales2=sales.sort(dynamicSortMultiple("customerName","invoiceNo"))
-        console.log(sales2 )
-        setRecipts(sales2)
+    //     let sales2=sales.sort(dynamicSortMultiple("customerName","invoiceNo"))
+    //     console.log(sales2 )
+        setRecipts(sales)
 
     }
 
@@ -388,7 +388,7 @@ const OutstandingSummary = () => {
 
                     <Grid item alignItems="stretch" style={{ display: "flex" }}>
                         <FormControl required sx={{ m: 1, minWidth: 120, marginLeft: "30px", width: "220px", marginTop: "20px", marginRight: "30px" }}>
-                            <InputLabel id="demo-simple-select-required-label">Date</InputLabel>
+                            <InputLabel id="demo-simple-select-required-label">Report Type</InputLabel>
                             <Select
                                 labelId="demo-simple-select-required-label"
                                 id="demo-simple-select-required"
