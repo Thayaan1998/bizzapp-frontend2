@@ -23,7 +23,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 
 import { Grid, Button } from "@mui/material";
 import { CSVLink } from "react-csv";
-import { getActiveCustomersAction } from '../action/customerAction'
+import { getCustomersAction } from '../action/customerAction'
 
 
 import jsPDF from "jspdf";
@@ -70,7 +70,7 @@ const OutstandingSummary = () => {
 
     const getCustomers = async () => {
 
-        var customers = await getActiveCustomersAction();
+        var customers = await getCustomersAction();
 
         setCustomers(customers)
     }
@@ -110,7 +110,7 @@ const OutstandingSummary = () => {
             const ticketData = [
                 recipt.invoiceNo,
                 recipt.invoiceDate,
-                customers.find(customer => customer.customerRefNo == recipt.customerRefNo).label,
+                customers.find(customer => customer.customerRefNo == recipt.customerRefNo).name,
                 recipt.customerRefNo,
                 recipt.datediff <= 7 ? recipt.balance.toFixed(2) : '',
                 recipt.datediff > 8 && recipt.datediff <= 15 ? recipt.balance.toFixed(2) : '',
@@ -123,7 +123,7 @@ const OutstandingSummary = () => {
 
 
             const ticketData2 = [
-                customers.find(customer => customer.customerRefNo == recipt.customerRefNo).label,
+                customers.find(customer => customer.customerRefNo == recipt.customerRefNo).name,
                 recipt.customerRefNo,
                 recipt.datediff <= 7 ? recipt.balance.toFixed(2) : '',
                 recipt.datediff > 8 && recipt.datediff <= 15 ? recipt.balance.toFixed(2) : '',
@@ -228,12 +228,16 @@ const OutstandingSummary = () => {
         var sales = await getDetailOutStanding(values);
 
         for (var i = 0; i < sales.length; i++) {
-            //  console.log(customers);
-            sales[i]["customerName"] = customers.find(customer => customer.customerRefNo == sales[i].customerRefNo).label
-            sales[i]["customerRefNo"] = customers.find(customer => customer.customerRefNo == sales[i].customerRefNo).customerRefNo;
+            console.log(i)
+            if(i==101){
+                debugger
+                sales[i]["customerName"] = customers.find(customer => customer.customerRefNo == sales[i].customerRefNo).name;
+                sales[i]["customerRefNo"] = customers.find(customer => customer.customerRefNo == sales[i].customerRefNo).customerRefNo;
+            }
+               
 
         }
-        console.log(customers);
+        console.log(sales);
 
         //     let already=[]
         //     for(var j=0;j<sales.length;j++){
@@ -303,7 +307,7 @@ const OutstandingSummary = () => {
 
         { field: "customerCode", headerName: "Customer RefNo", width: 130, valueGetter: (params) => `${params.row.customerRefNo}` },
 
-        { field: "customerRefNo", headerName: "Customer", width: 200, valueGetter: (params) => `${params.row.customerName}` },
+        { field: "customerRefNo", headerName: "Customer", width: 200, valueGetter: (params) => `${customers.find(customer => customer.customerRefNo == params.row.customerRefNo).name}` },
 
         { field: "7days", headerName: "0-7Days", align: 'right', width: 120, valueGetter: (params) => `${params.row.invoiceDate != "a" ? (params.row.datediff <= 7 ? params.row.balance.toFixed(2) : '') : '' || ''}` },
 
@@ -327,7 +331,7 @@ const OutstandingSummary = () => {
         // { field: "invoiceDate", headerName: "invoice Date", width: 150, valueGetter: (params) => `${params.row.invoiceDate || ''}` },
 
 
-        { field: "customerRefNo", headerName: "Customer", width: 200, valueGetter: (params) => `${params.row.customerName}` },
+        { field: "customerRefNo", headerName: "Customer", width: 200, valueGetter: (params) => `${customers.find(customer => customer.customerRefNo == params.row.customerRefNo).name}` },
 
         { field: "customerCode", headerName: "Customer RefNo", width: 200, valueGetter: (params) => `${params.row.customerRefNo}` },
 
